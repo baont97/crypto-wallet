@@ -1,5 +1,4 @@
 import { useScrollToTop } from "@react-navigation/native"
-import { useTheme } from "@rneui/themed"
 import { StatusBar, StatusBarProps } from "expo-status-bar"
 import React, { useRef, useState } from "react"
 import {
@@ -13,8 +12,8 @@ import {
   View,
   ViewStyle,
 } from "react-native"
-import { colors } from "../theme"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
+import { styled } from "nativewind"
 
 interface BaseScreenProps {
   /**
@@ -188,11 +187,9 @@ function ScreenWithScrolling(props: ScreenProps) {
   )
 }
 
-export function Screen(props: ScreenProps) {
-  const { theme } = useTheme()
-
+function _Screen(props: ScreenProps) {
   const {
-    backgroundColor = theme.colors.background,
+    backgroundColor,
     KeyboardAvoidingViewProps,
     keyboardOffset = 0,
     safeAreaEdges,
@@ -221,6 +218,13 @@ export function Screen(props: ScreenProps) {
     </View>
   )
 }
+
+export const Screen = styled<ScreenProps, "style" | "contentContainerStyle", any>(_Screen, {
+  props: {
+    style: true,
+    contentContainerStyle: true,
+  },
+})
 
 const $containerStyle: ViewStyle = {
   flex: 1,

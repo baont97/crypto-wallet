@@ -13,3 +13,7 @@ export function useIsMounted() {
 
   return useCallback(() => isMounted.current, [])
 }
+
+export function useMount(callback: React.EffectCallback) {
+  useEffect(callback, [])
+}

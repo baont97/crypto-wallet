@@ -1,5 +1,8 @@
 import React, { ComponentType } from "react"
+import { styled } from "nativewind"
 import {
+  ActivityIndicator,
+  ActivityIndicatorProps,
   Pressable,
   PressableProps,
   PressableStateCallbackType,
@@ -36,6 +39,10 @@ export interface ButtonProps extends PressableProps {
    */
   style?: StyleProp<ViewStyle>
   /**
+   * An optional style override useful for "disabled" state.
+   */
+  disabledStyle?: StyleProp<ViewStyle>
+  /**
    * An optional style override for the "pressed" state.
    */
   pressedStyle?: StyleProp<ViewStyle>
@@ -65,6 +72,14 @@ export interface ButtonProps extends PressableProps {
    * Children components.
    */
   children?: React.ReactNode
+  /**
+   * Show an loading indicator
+   */
+  loading?: boolean
+  /**
+   * Loading activity indicator props
+   */
+  LoadingProps?: ActivityIndicatorProps
 }
 
 /**
@@ -73,18 +88,21 @@ export interface ButtonProps extends PressableProps {
  *
  * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-Button.md)
  */
-export function Button(props: ButtonProps) {
+function _Button(props: ButtonProps) {
   const {
     tx,
     text,
+    loading,
     txOptions,
     style: $viewStyleOverride,
+    disabledStyle: $disabledViewStyleOverride,
     pressedStyle: $pressedViewStyleOverride,
     textStyle: $textStyleOverride,
     pressedTextStyle: $pressedTextStyleOverride,
     children,
     RightAccessory,
     LeftAccessory,
+    LoadingProps,
     ...rest
   } = props
 
@@ -94,6 +112,7 @@ export function Button(props: ButtonProps) {
       $viewPresets[preset],
       $viewStyleOverride,
       !!pressed && [$pressedViewPresets[preset], $pressedViewStyleOverride],
+      !!rest.disabled && [$disabledViewPresets[preset], $disabledViewStyleOverride],
     ]
   }
   function $textStyle({ pressed }) {
@@ -106,26 +125,45 @@ export function Button(props: ButtonProps) {
 
   return (
     <Pressable style={$viewStyle} accessibilityRole="button" {...rest}>
-      {(state) => (
-        <>
-          {!!LeftAccessory && <LeftAccessory style={$leftAccessoryStyle} pressableState={state} />}
+      {(state) =>
+        loading ? (
+          <ActivityIndicator size="small" {...$loadingPresets[preset]} {...LoadingProps} />
+        ) : (
+          <>
+            {!!LeftAccessory && (
+              <LeftAccessory style={$leftAccessoryStyle} pressableState={state} />
+            )}
 
-          <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
-            {children}
-          </Text>
+            <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
+              {children}
+            </Text>
 
-          {!!RightAccessory && (
-            <RightAccessory style={$rightAccessoryStyle} pressableState={state} />
-          )}
-        </>
-      )}
+            {!!RightAccessory && (
+              <RightAccessory style={$rightAccessoryStyle} pressableState={state} />
+            )}
+          </>
+        )
+      }
     </Pressable>
   )
 }
 
+export const Button = styled<
+  ButtonProps,
+  "style" | "pressedStyle" | "textStyle" | "pressedTextStyle",
+  any
+>(_Button, {
+  props: {
+    style: true,
+    pressedStyle: true,
+    textStyle: true,
+    pressedTextStyle: true,
+  },
+})
+
 const $baseViewStyle: ViewStyle = {
   minHeight: 56,
-  borderRadius: 4,
+  borderRadius: spacing.extraSmall,
   justifyContent: "center",
   alignItems: "center",
   flexDirection: "row",
@@ -142,6 +180,7 @@ const $baseTextStyle: TextStyle = {
   flexShrink: 1,
   flexGrow: 0,
   zIndex: 2,
+  color: colors.primary[500],
 }
 
 const $rightAccessoryStyle: ViewStyle = { marginStart: spacing.extraSmall, zIndex: 1 }
@@ -152,33 +191,49 @@ const $viewPresets = {
     $baseViewStyle,
     {
       borderWidth: 1,
-      borderColor: colors.palette.neutral400,
-      backgroundColor: colors.palette.neutral100,
+      borderColor: colors.primary[400],
+      backgroundColor: colors.primary[100],
     },
   ] as StyleProp<ViewStyle>,
 
-  filled: [$baseViewStyle, { backgroundColor: colors.palette.neutral300 }] as StyleProp<ViewStyle>,
+  filled: [$baseViewStyle, { backgroundColor: colors.primary[500] }] as StyleProp<ViewStyle>,
 
-  reversed: [
-    $baseViewStyle,
-    { backgroundColor: colors.palette.neutral800 },
-  ] as StyleProp<ViewStyle>,
+  reversed: [$baseViewStyle, { backgroundColor: colors.primary[800] }] as StyleProp<ViewStyle>,
+
+  clear: [$baseViewStyle, { backgroundColor: colors.transparent }] as StyleProp<ViewStyle>,
 }
 
 const $textPresets: Record<Presets, StyleProp<TextStyle>> = {
   default: $baseTextStyle,
-  filled: $baseTextStyle,
-  reversed: [$baseTextStyle, { color: colors.palette.neutral100 }],
+  filled: [$baseTextStyle, { color: colors.white }],
+  reversed: [$baseTextStyle, { color: colors.primary[100] }],
+  clear: [$baseTextStyle, { color: colors.black }],
 }
 
 const $pressedViewPresets: Record<Presets, StyleProp<ViewStyle>> = {
-  default: { backgroundColor: colors.palette.neutral200 },
-  filled: { backgroundColor: colors.palette.neutral400 },
-  reversed: { backgroundColor: colors.palette.neutral700 },
+  default: { backgroundColor: colors.primary[200] },
+  filled: { backgroundColor: colors.primary[400] },
+  reversed: { backgroundColor: colors.primary[700] },
+  clear: { backgroundColor: colors.black[50] },
+}
+
+const $disabledViewPresets: Record<Presets, StyleProp<ViewStyle>> = {
+  default: { backgroundColor: colors.gray[300] },
+  filled: { backgroundColor: colors.gray[300] },
+  reversed: { backgroundColor: colors.gray[300] },
+  clear: { backgroundColor: colors.gray[300] },
 }
 
 const $pressedTextPresets: Record<Presets, StyleProp<TextStyle>> = {
   default: { opacity: 0.9 },
   filled: { opacity: 0.9 },
   reversed: { opacity: 0.9 },
+  clear: { opacity: 0.9 },
+}
+
+const $loadingPresets: Record<Presets, ActivityIndicatorProps> = {
+  default: { color: colors.primary[500] },
+  filled: { color: colors.white },
+  reversed: { color: colors.white },
+  clear: { color: colors.primary[500] },
 }

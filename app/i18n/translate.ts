@@ -25,6 +25,18 @@ import { TxKeyPath } from "./i18n"
  * // => "Hello world!"
  * ```
  */
-export function translate(key: TxKeyPath, options?: i18n.TranslateOptions) {
-  return i18n.t(key, options)
+export function translate(
+  key: TxKeyPath,
+  variables: string[] = [],
+  options?: i18n.TranslateOptions,
+) {
+  let res = i18n.t(key, options)
+
+  if (variables.length) {
+    variables.forEach((value, index) => {
+      res = res.replace(`{${index}}`, value)
+    })
+  }
+
+  return res
 }

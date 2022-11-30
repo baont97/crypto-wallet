@@ -1,5 +1,5 @@
-import { Image } from "@rneui/themed"
 import React, { useLayoutEffect, useState } from "react"
+import { Image } from "react-native"
 import { ImageProps, ImageURISource, Platform } from "react-native"
 
 // TODO: document new props

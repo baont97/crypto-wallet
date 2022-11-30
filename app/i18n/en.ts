@@ -1,20 +1,33 @@
 const en = {
   common: {
-    ok: "OK!",
-    cancel: "Cancel",
-    back: "Back",
+    paste: "Paste",
+    import: "Import",
+    continue: "Continue",
+    copy: "Copy",
+    copied: "Copied",
+    mainWallet: "Main Wallet",
   },
-  welcomeScreen: {
-    postscript:
-      "psst  — This probably isn't what your app looks like. (Unless your designer handed you these screens, and in that case, ship it!)",
-    readyForLaunch: "Your app, almost ready for launch!",
-    exciting: "(ohh, this is exciting!)",
+  welcome: {
+    createNewWallet: "Create a new wallet",
+    importWallet: "I already have a wallet",
   },
-  errorScreen: {
-    title: "Something went wrong!",
-    friendlySubtitle:
-      "This is the screen that your users will see in production when an error is thrown. You'll want to customize this message (located in `app/i18n/en.ts`) and probably the layout as well (`app/screens/ErrorScreen`). If you want to remove this entirely, check `app/app.tsx` for the <ErrorBoundary> component.",
-    reset: "RESET APP",
+  navigators: {
+    goBack: "Back",
+
+    screenName: {
+      legal: "Legal",
+      setupPasscode: "Set Passcode",
+      inputPasscode: "Enter Passcode",
+      createNewWallet: "Create New Wallet",
+      importWallet: "Import",
+      home: "Wallet",
+      settings: "Settings",
+    },
+  },
+  legal: {
+    message: "Please review the Sparkminds Wallet Terms of Service and Privacy Policy",
+    privacy: "Privacy Policy",
+    terms: "Terms of Service",
   },
   emptyStateComponent: {
     generic: {
@@ -22,6 +35,60 @@ const en = {
       content: "No data found yet. Try clicking the button to refresh or reload the app.",
       button: "Let's try this again",
     },
+  },
+  passcode: {
+    setupPasscode: {
+      step: {
+        create: {
+          label: "Create Passcode",
+        },
+        confirm: {
+          label: "Confirm Passcode",
+        },
+      },
+      hint: "Adds an extra layer of security when using the app",
+    },
+    wrongPasscodeMessage: "Wrong passcode, please try again",
+  },
+  importWallet: {
+    hint: "Typically 12 (sometimes 24) words separated by single spaces",
+  },
+  createNewWallet: {
+    generateSecretPhrare: "Your Secret Phrase",
+    generateSecretPhrareHint:
+      "Write down or copy these words in the right order and save them somewhere safe.",
+    verifySecretPhrase: "Verify Secret Phrase",
+    verifySecretPhraseHint: "Tap the words to put them next to each other in the correct order.",
+    secretSpecialHint:
+      "DO NOT  share your phrase to anyone as this gives full access to your wallet!",
+  },
+  home: {
+    actions: {
+      send: "Send",
+      receive: "Receive",
+      buy: "Buy",
+      swap: "Swap",
+    },
+    tabs: {
+      token: "Tokens",
+      nft: "NFTs",
+    },
+  },
+  input: {
+    walletName: {
+      label: "Name",
+      placeholder: "Please enter name of wallet",
+    },
+    secretPhrase: {
+      label: "Secret Phrase",
+      placeholder: "Secret Phrase",
+    },
+  },
+  errorMessage: {
+    required: "{0} is required",
+    invalid: "Invalid {0}",
+    unknown: "Something went wrong. Please try again.",
+    mnemonicWrongOrder: "Invalid order. Try again!",
   },
 }
 

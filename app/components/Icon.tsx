@@ -3,12 +3,14 @@ import { ComponentType } from "react"
 import {
   ImageStyle,
   StyleProp,
+  StyleSheet,
   TouchableOpacity,
   TouchableOpacityProps,
   View,
   ViewStyle,
+  Image,
 } from "react-native"
-import { Image } from "@rneui/themed"
+import { styled } from "nativewind"
 
 export type IconTypes = keyof typeof iconRegistry
 
@@ -50,7 +52,7 @@ interface IconProps extends TouchableOpacityProps {
  *
  * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-Icon.md)
  */
-export function Icon(props: IconProps) {
+function _Icon(props: IconProps) {
   const {
     icon,
     color,
@@ -64,6 +66,7 @@ export function Icon(props: IconProps) {
   const Wrapper: ComponentType<TouchableOpacityProps> = WrapperProps?.onPress
     ? TouchableOpacity
     : View
+  const tintColor = color || StyleSheet.flatten([$imageStyle?.tintColor])?.["tintColor"]
 
   return (
     <Wrapper
@@ -74,7 +77,7 @@ export function Icon(props: IconProps) {
       <Image
         style={[
           $imageStyle,
-          color && { tintColor: color },
+          tintColor && { tintColor },
           size && { width: size, height: size },
           $imageStyleOverride,
         ]}
@@ -83,6 +86,13 @@ export function Icon(props: IconProps) {
     </Wrapper>
   )
 }
+
+export const Icon = styled<IconProps, "style" | "containerStyle", any>(_Icon, {
+  props: {
+    style: true,
+    containerStyle: true,
+  },
+})
 
 export const iconRegistry = {
   back: require("../../assets/icons/back.png"),
@@ -107,6 +117,12 @@ export const iconRegistry = {
   slack: require("../../assets/icons/slack.png"),
   view: require("../../assets/icons/view.png"),
   x: require("../../assets/icons/x.png"),
+  send: require("../../assets/icons/send.png"),
+  receive: require("../../assets/icons/receive.png"),
+  buy: require("../../assets/icons/buy.png"),
+  swap: require("../../assets/icons/swap.png"),
+  filter: require("../../assets/icons/filter.png"),
+  wallet: require("../../assets/icons/wallet.png"),
 }
 
 const $imageStyle: ImageStyle = {

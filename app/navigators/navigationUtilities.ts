@@ -9,6 +9,7 @@ import {
 import Config from "../config"
 import type { PersistNavigationConfig } from "../config/config.base"
 import { useIsMounted } from "../utils/useIsMounted"
+import { TxKeyPath } from "../i18n"
 
 /* eslint-disable */
 export const RootNavigation = {
@@ -23,6 +24,23 @@ export const RootNavigation = {
 /* eslint-enable */
 
 export const navigationRef = createNavigationContainerRef()
+
+/**
+ * Gets the previous screen from any navigation state.
+ */
+export function getPreviousRouteName(state: NavigationState | PartialState<NavigationState>) {
+  if (state.index === 0) {
+    return ""
+  }
+
+  const route = state.routes[state.index - 1]
+
+  // Found the active route -- return the name
+  if (!route.state) return route.name
+
+  // Recursive call to deal with nested routers
+  return getPreviousRouteName(route.state)
+}
 
 /**
  * Gets the current screen from any navigation state.
@@ -167,4 +185,12 @@ export function resetRoot(params = { index: 0, routes: [] }) {
   if (navigationRef.isReady()) {
     navigationRef.resetRoot(params)
   }
+}
+
+export function getNavigationHeaderText(input: string): TxKeyPath {
+  let _screenName = input
+
+  return ("navigators.screenName." +
+    _screenName.charAt(0).toLowerCase() +
+    _screenName.slice(1, _screenName.length)) as TxKeyPath
 }

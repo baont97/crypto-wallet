@@ -23,6 +23,7 @@ import { customFontsToLoad } from "./theme"
 import { setupReactotron } from "./services/reactotron"
 import Config from "./config"
 
+
 // Set up Reactotron, which is a free desktop app for inspecting and debugging
 // React Native apps. Learn more here: https://github.com/infinitered/reactotron
 setupReactotron({
@@ -43,22 +44,7 @@ export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 // Web linking configuration
 const prefix = Linking.createURL("/")
 const config = {
-  screens: {
-    Login: {
-      path: "",
-    },
-    Welcome: "welcome",
-    Demo: {
-      screens: {
-        DemoShowroom: {
-          path: "showroom/:queryIndex?/:itemIndex?",
-        },
-        DemoDebug: "debug",
-        DemoPodcastList: "podcast",
-        DemoCommunity: "community",
-      },
-    },
-  },
+  screens: {},
 }
 
 interface AppProps {
@@ -107,8 +93,8 @@ function App(props: AppProps) {
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <AppNavigator
           linking={linking}
-          initialState={initialNavigationState}
-          onStateChange={onNavigationStateChange}
+          // initialState={initialNavigationState}
+          // onStateChange={onNavigationStateChange}
         />
       </ErrorBoundary>
     </SafeAreaProvider>

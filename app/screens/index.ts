@@ -1,3 +1,8 @@
 export * from "./WelcomeScreen"
-export * from "./ErrorScreen/ErrorBoundary"
-// export other screens here
+export * from "./LegalScreen"
+export * from "./PasscodeScreen"
+export * from "./WalletScreen"
+export * from "./HomeScreen"
+export * from "./SettingsScreen"
+export * from "./SendScreen"
+export * from "./ReceiveScreen"

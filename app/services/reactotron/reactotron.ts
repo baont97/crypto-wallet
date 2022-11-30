@@ -158,10 +158,10 @@ export function setupReactotron(customConfig: ReactotronConfig = {}) {
       handler: (args) => {
         const { route } = args
         if (route) {
-          console.log(`Navigating to: ${route}`)
+          // console.log(`Navigating to: ${route}`)
           navigate(route)
         } else {
-          console.log("Could not navigate. No route provided.")
+          // console.log("Could not navigate. No route provided.")
         }
       },
       title: "Navigate To Screen",
