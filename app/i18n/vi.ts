@@ -8,6 +8,8 @@ const vi: Translations = {
     copy: "Sao chép",
     copied: "Đã sao chép vào khay nhớ tạm",
     mainWallet: "Ví chính",
+    done: "Xong",
+    share: "Chia sẻ",
   },
   welcome: {
     createNewWallet: "Tạo ví mới",
@@ -24,6 +26,9 @@ const vi: Translations = {
       importWallet: "Nhập ví đã có sẵn",
       home: "Ví",
       settings: "Cài đặt",
+      receive: "Nhận",
+      send: "Gửi",
+      buy: "Mua",
     },
   },
   legal: {
@@ -85,6 +90,9 @@ const vi: Translations = {
       label: "Cụm từ bí mật",
       placeholder: "Cụm từ bí mật",
     },
+    search: {
+      placeholder: "Tìm kiếm ở đây..."
+    }
   },
   errorMessage: {
     required: "{0} là bắt buộc",

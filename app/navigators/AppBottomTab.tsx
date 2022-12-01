@@ -5,9 +5,10 @@ import { HomeScreen } from "../screens"
 import { SettingsScreen } from "../screens/SettingsScreen"
 import { Icon, Text } from "../components"
 import { spacing } from "../theme"
+import { HomeStack } from "./HomeStack"
 
 export type AppBottomTabParamList = {
-  Home: undefined
+  HomeStack: undefined
   Settings: undefined
 }
 
@@ -26,11 +27,12 @@ export const AppBottomTab = observer(function AppBottomTab() {
       }}
     >
       <BottomTab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="HomeStack"
+        component={HomeStack}
         options={{
           tabBarIcon: ({ color, size }) => <Icon icon="wallet" {...{ color, size }} />,
           tabBarLabel: ({ color }) => <Text style={{ color }} tx="navigators.screenName.home" />,
+          headerShown: false,
         }}
       />
       <BottomTab.Screen

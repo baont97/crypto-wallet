@@ -6,6 +6,8 @@ const en = {
     copy: "Copy",
     copied: "Copied",
     mainWallet: "Main Wallet",
+    done: "Done",
+    share: "Share",
   },
   welcome: {
     createNewWallet: "Create a new wallet",
@@ -22,6 +24,9 @@ const en = {
       importWallet: "Import",
       home: "Wallet",
       settings: "Settings",
+      receive: "Receive",
+      send: "Send",
+      buy: "Buy",
     },
   },
   legal: {
@@ -82,6 +87,9 @@ const en = {
     secretPhrase: {
       label: "Secret Phrase",
       placeholder: "Secret Phrase",
+    },
+    search: {
+      placeholder: "Search here...",
     },
   },
   errorMessage: {

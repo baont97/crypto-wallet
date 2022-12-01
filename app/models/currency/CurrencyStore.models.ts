@@ -7,6 +7,7 @@ export const CurrencyModel = types.model("Currency").props({
   decimals: types.maybe(types.number),
   contractAddress: types.maybe(types.string),
   image: types.maybe(types.string),
+  priceChangePercentage24h: types.maybe(types.number),
 })
 
 type CurrencyType = Instance<typeof CurrencyModel>

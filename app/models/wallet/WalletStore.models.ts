@@ -4,6 +4,7 @@ export const BalanceModel = types.model("Currency").props({
   currencyId: types.maybe(types.string),
   native: types.maybe(types.number),
   fiat: types.maybe(types.number),
+  exchangeRate: types.maybe(types.number),
 })
 
 type BalanceType = Instance<typeof BalanceModel>

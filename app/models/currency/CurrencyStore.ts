@@ -14,6 +14,11 @@ export const CurrencyStoreModel = types
     get isHaveCurrency() {
       return self.currencies.length > 0
     },
+    filterCurrencies(keyword: string = "") {
+      return self.currencies.filter((item) =>
+        (item.name.toLowerCase() + item.shortName.toLowerCase()).includes(keyword.toLowerCase()),
+      )
+    },
   }))
   .actions(withSetPropAction)
   .actions((self) => ({

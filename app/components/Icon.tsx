@@ -123,6 +123,9 @@ export const iconRegistry = {
   swap: require("../../assets/icons/swap.png"),
   filter: require("../../assets/icons/filter.png"),
   wallet: require("../../assets/icons/wallet.png"),
+  search: require("../../assets/icons/search.png"),
+  copy: require("../../assets/icons/copy.png"),
+  share: require("../../assets/icons/share.png"),
 }
 
 const $imageStyle: ImageStyle = {

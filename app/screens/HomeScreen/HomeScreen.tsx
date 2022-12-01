@@ -1,40 +1,33 @@
-import { observer } from "mobx-react-lite"
 import React, { FC } from "react"
+import { observer } from "mobx-react-lite"
 import { RefreshControl, View } from "react-native"
-import { Button, Icon, Screen, Text } from "../../components"
-import { useBalance } from "../../hooks"
+import { Icon, Screen, Text } from "../../components"
 import { useStores } from "../../models"
-import { AppBottomTabScreenProps } from "../../navigators/AppBottomTab"
-import { colors, spacing } from "../../theme"
+import { colors } from "../../theme"
 import { useHeaderOption } from "../../utils/useHeader"
 import { HomeActions } from "./HomeActions"
 import { HomeTabs } from "./HomeTabs"
+import { HomeStackScreenProps } from "../../navigators/HomeStack"
+import { HeaderBackButton } from "@react-navigation/elements"
 
 import i18n from "i18n-js"
 
-export const HomeScreen: FC<AppBottomTabScreenProps<"Home">> = observer(function () {
+export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function () {
   // hooks
   const rootStore = useStores()
 
   useHeaderOption({
     headerTitle: "",
     headerStyle: { backgroundColor: colors.primary[500] },
-    headerLeft: () => (
-      <Button
-        preset="clear"
-        className="aspect-square"
-        LeftAccessory={() => <Icon icon="bell" size={spacing.medium * 1.2} color={colors.white} />}
-      />
-    ),
-    headerRight: () => (
-      <Button
-        preset="clear"
-        className="aspect-square"
-        LeftAccessory={() => (
-          <Icon icon="filter" size={spacing.medium * 1.2} color={colors.white} />
-        )}
-      />
-    ),
+    headerTintColor: colors.white,
+    headerLeft: (props) => {
+      return (
+        <HeaderBackButton
+          {...props}
+          backImage={(props) => <Icon icon="bell" color={props.tintColor} />}
+        />
+      )
+    },
   })
 
   return (

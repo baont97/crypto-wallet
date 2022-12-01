@@ -30,6 +30,8 @@ import { IWallet } from "react-native-web3-wallet/interface"
 import { translate } from "../i18n"
 import { spacing, typography } from "../theme"
 import { useBalance } from "../hooks"
+import { ReceiveStack } from "./ReceiveStack"
+import { SendStack } from "./SendStack"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -52,8 +54,8 @@ export type AppStackParamList = {
   SetupPasscode: { type: CreateWalletType }
   InputPasscode: { type: CreateWalletType }
 
-  Send: undefined
-  Receive: undefined
+  SendStack: undefined
+  ReceiveStack: undefined
   Buy: undefined
   Swap: undefined
 
@@ -108,7 +110,16 @@ const AppStack = observer(function AppStack() {
             component={AppBottomTab}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Send" component={SendScreen} />
+          <Stack.Screen
+            name="SendStack"
+            component={SendStack}
+            options={{ presentation: "modal", headerShown: false }}
+          />
+          <Stack.Screen
+            name="ReceiveStack"
+            component={ReceiveStack}
+            options={{ presentation: "modal", headerShown: false }}
+          />
         </Stack.Group>
       ) : (
         <Stack.Group>

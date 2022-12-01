@@ -28,6 +28,7 @@ export const WalletStoreModel = types
           native: 0,
           fiat: 0,
           currencyId: input,
+          exchangeRate: 1,
         }
       )
     },

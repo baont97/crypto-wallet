@@ -11,6 +11,8 @@ export * from "./Toggle"
 export * from "./EmptyState"
 export * from "./RowItemGroup"
 export * from "./Divider"
+export * from "./SearchField"
 
 export * from "./welcome"
 export * from "./passcode"
+export * from "./currency"
