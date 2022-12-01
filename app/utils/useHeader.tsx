@@ -1,9 +1,9 @@
 import React, { useLayoutEffect } from "react"
 import { useNavigation } from "@react-navigation/native"
 import { Header, HeaderProps } from "../components"
-import { StackNavigationOptions } from "@react-navigation/stack"
 import { translate, TxKeyPath } from "../i18n"
 import { typography } from "../theme"
+import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 
 export function useHeader(headerProps: HeaderProps, deps: any[] = []) {
   const navigation = useNavigation()
@@ -16,7 +16,7 @@ export function useHeader(headerProps: HeaderProps, deps: any[] = []) {
   }, deps)
 }
 
-export interface UseHeaderOption extends Partial<StackNavigationOptions> {
+export interface UseHeaderOption extends Partial<NativeStackNavigationOptions> {
   headerBackTitleTx?: TxKeyPath
   titleTx?: TxKeyPath
 }

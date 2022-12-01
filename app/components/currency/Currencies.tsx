@@ -20,7 +20,9 @@ export const Currencies = observer(
     const _keyword = useState<string>("")
 
     // functions
-    const search = (key: string) => debounce(() => _keyword[1](key), 500)()
+    const search = (key: string) => {
+      debounce(() => _keyword[1](key), 500)()
+    }
 
     // effects
     useEffect(() => {
@@ -37,6 +39,7 @@ export const Currencies = observer(
           return <CurrencyItem data={item} onPress={() => onItemPress(item)} />
         }}
         ItemSeparatorComponent={() => <Divider className="ml-[70px] h-[0.5px]" />}
+        contentInsetAdjustmentBehavior="automatic"
       />
     )
   }),
