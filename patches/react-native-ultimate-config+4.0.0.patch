@@ -1,0 +1,300 @@
+diff --git a/node_modules/react-native-ultimate-config/android/build.gradle b/node_modules/react-native-ultimate-config/android/build.gradle
+index 7ba78ad..b134fc1 100644
+--- a/node_modules/react-native-ultimate-config/android/build.gradle
++++ b/node_modules/react-native-ultimate-config/android/build.gradle
+@@ -10,17 +10,7 @@
+ //   original location:
+ //   - https://github.com/facebook/react-native/blob/0.58-stable/local-cli/templates/HelloWorld/android/app/build.gradle
+ 
+-def DEFAULT_COMPILE_SDK_VERSION = 28
+-def DEFAULT_BUILD_TOOLS_VERSION = '28.0.3'
+-def DEFAULT_MIN_SDK_VERSION = 16
+-def DEFAULT_TARGET_SDK_VERSION = 28
+-
+-def safeExtGet(prop, fallback) {
+-    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+-}
+-
+ apply plugin: 'com.android.library'
+-apply plugin: 'maven-publish'
+ 
+ buildscript {
+     // The Android Gradle plugin is only required when opening the android folder stand-alone.
+@@ -41,122 +31,112 @@ buildscript {
+ apply plugin: 'com.android.library'
+ apply plugin: 'maven-publish'
+ 
+-android {
+-    compileSdkVersion safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
+-    buildToolsVersion safeExtGet('buildToolsVersion', DEFAULT_BUILD_TOOLS_VERSION)
+-    defaultConfig {
+-        minSdkVersion safeExtGet('minSdkVersion', DEFAULT_MIN_SDK_VERSION)
+-        targetSdkVersion safeExtGet('targetSdkVersion', DEFAULT_TARGET_SDK_VERSION)
+-        versionCode 1
+-        versionName "1.0"
+-    }
+-    lintOptions {
+-        abortOnError false
+-    }
+-}
+ 
+-repositories {
+-    // ref: https://www.baeldung.com/maven-local-repository
+-    mavenLocal()
+-    maven {
+-        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+-        url "$rootDir/../node_modules/react-native/android"
+-    }
+-    maven {
+-        // Android JSC is installed from npm
+-        url "$rootDir/../node_modules/jsc-android/dist"
+-    }
+-    google()
+-    jcenter()
++def getExtOrDefault(name) {
++  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['RNAndroidNotificationListener_' + name]
+ }
+ 
+-dependencies {
+-    //noinspection GradleDynamicVersion
+-    implementation 'com.facebook.react:react-native:+'  // From node_modules
++def getExtOrIntegerDefault(name) {
++  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['RNAndroidNotificationListener_' + name]).toInteger()
+ }
+ 
+-def configureReactNativePom(def pom) {
+-    def packageJson = new groovy.json.JsonSlurper().parseText(file('../package.json').text)
+-
+-    pom.project {
+-        name packageJson.title
+-        artifactId packageJson.name
+-        version = packageJson.version
+-        group = "com.reactnativeultimateconfig"
+-        description packageJson.description
+-        url packageJson.repository.baseUrl
+-
+-        licenses {
+-            license {
+-                name packageJson.license
+-                url packageJson.repository.baseUrl + '/blob/master/' + packageJson.licenseFilename
+-                distribution 'repo'
+-            }
+-        }
++android {
+ 
+-        developers {
+-            developer {
+-                id packageJson.author.username
+-                name packageJson.author.name
+-            }
+-        }
+-    }
+-}
++  compileSdkVersion getExtOrIntegerDefault('compileSdkVersion')
+ 
+-afterEvaluate { project ->
+-    // some Gradle build hooks ref:
+-    // https://www.oreilly.com/library/view/gradle-beyond-the/9781449373801/ch03.html
+-    task androidJavadoc(type: Javadoc) {
+-        source = android.sourceSets.main.java.srcDirs
+-        classpath += files(android.bootClasspath)
+-        project.getConfigurations().implementation.setCanBeResolved(true)
+-        classpath += files(project.getConfigurations().getByName('implementation').asList())
+-        include '**/*.java'
++  defaultConfig {
++    minSdkVersion getExtOrIntegerDefault('minSdkVersion')
++    targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
++      versionCode 1
++      versionName "1.0"
+ 
+-    }
++  }
+ 
+-    task androidJavadocJar(type: Jar, dependsOn: androidJavadoc) {
+-        classifier = 'javadoc'
+-        from androidJavadoc.destinationDir
++  buildTypes {
++    release {
++      minifyEnabled false
+     }
++  }
++  lintOptions {
++    disable 'GradleCompatible'
++  }
++  compileOptions {
++    sourceCompatibility JavaVersion.VERSION_1_8
++    targetCompatibility JavaVersion.VERSION_1_8
++  }
++}
+ 
+-    task androidSourcesJar(type: Jar) {
+-        classifier = 'sources'
+-        from android.sourceSets.main.java.srcDirs
+-        include '**/*.java'
++repositories {
++  mavenCentral()
++  google()
++
++  def found = false
++  def defaultDir = null
++  def androidSourcesName = 'React Native sources'
++
++  if (rootProject.ext.has('reactNativeAndroidRoot')) {
++    defaultDir = rootProject.ext.get('reactNativeAndroidRoot')
++  } else {
++    defaultDir = new File(
++      projectDir,
++      '/../../../node_modules/react-native/android'
++    )
++  }
++
++  if (defaultDir.exists()) {
++    maven {
++      url defaultDir.toString()
++      name androidSourcesName
+     }
+ 
+-    android.libraryVariants.all { variant ->
+-        def name = variant.name.capitalize()
+-        def javaCompileTask = variant.javaCompileProvider.get()
++    logger.info(":${project.name}:reactNativeAndroidRoot ${defaultDir.canonicalPath}")
++    found = true
++  } else {
++    def parentDir = rootProject.projectDir
++
++    1.upto(5, {
++      if (found) return true
++      parentDir = parentDir.parentFile
++
++      def androidSourcesDir = new File(
++        parentDir,
++        'node_modules/react-native'
++      )
++
++      def androidPrebuiltBinaryDir = new File(
++        parentDir,
++        'node_modules/react-native/android'
++      )
++
++      if (androidPrebuiltBinaryDir.exists()) {
++        maven {
++          url androidPrebuiltBinaryDir.toString()
++          name androidSourcesName
++        }
+ 
+-        task "jar${name}"(type: Jar, dependsOn: javaCompileTask) {
+-            from javaCompileTask.destinationDir
++        logger.info(":${project.name}:reactNativeAndroidRoot ${androidPrebuiltBinaryDir.canonicalPath}")
++        found = true
++      } else if (androidSourcesDir.exists()) {
++        maven {
++          url androidSourcesDir.toString()
++          name androidSourcesName
+         }
+-    }
+ 
+-    artifacts {
+-        archives androidSourcesJar
+-        archives androidJavadocJar
+-    }
++        logger.info(":${project.name}:reactNativeAndroidRoot ${androidSourcesDir.canonicalPath}")
++        found = true
++      }
++    })
++  }
++
++  if (!found) {
++    throw new GradleException(
++      "${project.name}: unable to locate React Native android sources. " +
++      "Ensure you have you installed React Native as a dependency in your project and try again."
++    )
++  }
++}
+ 
+-    task installArchives(type: Upload) {
+-        configuration = configurations.archives
+-        // Honestly I have no idea maven works, it looks like the new solution should look somewhat like
+-        // so, but the pom is no longer available as a global variable under this setup
+-        publishing {
+-            repositories {
+-                maven {
+-                    url "file://${projectDir}/../android/maven"
+-//                    configureReactNativePom pom
+-                }
+-            }
+-        }
+-//        This no longer works in 
+-//        repositories.mavenDeployer {
+-//            // Deploy to react-native-event-bridge/maven, ready to publish to npm
+-//            repository url: "file://${projectDir}/../android/maven"
+-//            configureReactNativePom pom
+-//        }
+-    }
++dependencies {
++  //noinspection GradleDynamicVersion
++  implementation "com.facebook.react:react-native:+"
+ }
+\ No newline at end of file
+diff --git a/node_modules/react-native-ultimate-config/android/rnuc.yaml b/node_modules/react-native-ultimate-config/android/rnuc.yaml
+new file mode 100644
+index 0000000..9da12ca
+--- /dev/null
++++ b/node_modules/react-native-ultimate-config/android/rnuc.yaml
+@@ -0,0 +1,2 @@
++API_URL: "https:/example.com"
++APP_NAME: "SP Wallet(DEV)"
+diff --git a/node_modules/react-native-ultimate-config/index.d.ts b/node_modules/react-native-ultimate-config/index.d.ts
+new file mode 100644
+index 0000000..7932528
+--- /dev/null
++++ b/node_modules/react-native-ultimate-config/index.d.ts
+@@ -0,0 +1,9 @@
++// DO NOT COMMIT OR EDIT THIS FILE
++export interface ConfigVariables {
++  API_URL: string;
++  APP_NAME: string;
++}
++
++declare const UltimateConfig: ConfigVariables;
++
++export default UltimateConfig;
+diff --git a/node_modules/react-native-ultimate-config/index.web.js b/node_modules/react-native-ultimate-config/index.web.js
+new file mode 100644
+index 0000000..39bf2f6
+--- /dev/null
++++ b/node_modules/react-native-ultimate-config/index.web.js
+@@ -0,0 +1,4 @@
++module.exports = {
++  "API_URL": "https:/example.com",
++  "APP_NAME": "SP Wallet(DEV)"
++}
+diff --git a/node_modules/react-native-ultimate-config/ios/ConfigValues.h b/node_modules/react-native-ultimate-config/ios/ConfigValues.h
+index 87557b2..748be2b 100644
+--- a/node_modules/react-native-ultimate-config/ios/ConfigValues.h
++++ b/node_modules/react-native-ultimate-config/ios/ConfigValues.h
+@@ -1 +1,10 @@
+-#error "invoke bin.js with env file before compiling native project"
++// DO NOT COMMIT OR EDIT THIS FILE
++#define API_URL @"https:/example.com"
++#define APP_NAME @"SP Wallet(DEV)"
++
++static NSDictionary *getValues() {
++    return @{
++        @"API_URL": API_URL,
++        @"APP_NAME": APP_NAME,
++    };
++}
+diff --git a/node_modules/react-native-ultimate-config/override.js b/node_modules/react-native-ultimate-config/override.js
+new file mode 100644
+index 0000000..b29fa54
+--- /dev/null
++++ b/node_modules/react-native-ultimate-config/override.js
+@@ -0,0 +1,8 @@
++const RN = require("react-native");
++
++const IOS_DATA = {}
++
++const ANDROID_DATA = {}
++
++module.exports = {
++}

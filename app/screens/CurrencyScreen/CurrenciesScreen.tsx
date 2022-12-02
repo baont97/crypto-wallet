@@ -16,9 +16,6 @@ export const CurrenciesScreen: FC<CurrenciesScreenProps> = observer(function ({
   route,
   navigation,
 }) {
-  // hooks
-  const isMounted = useIsMounted()
-
   // refs
   const currenciesRef = useRef<typeof Currencies>()
 
@@ -48,6 +45,7 @@ export const CurrenciesScreen: FC<CurrenciesScreenProps> = observer(function ({
         headerIconColor: colors.white,
         barTintColor: colors.white,
         hideWhenScrolling: false,
+        tintColor: colors.white,
       },
     },
     [navigation],

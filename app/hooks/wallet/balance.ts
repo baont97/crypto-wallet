@@ -77,8 +77,8 @@ export const useBalance = () => {
         "currencies",
         rootStore.currencyStore.currencies.map((item) => ({
           ...item,
-          priceChangePercentage24h: response.find((_item) => _item.currencyId === item.id)
-            ?.priceChangePercentage24h,
+          priceChangePercentage24h:
+            response.find((_item) => _item.currencyId === item.id)?.priceChangePercentage24h || 0,
         })),
       )
     })

@@ -1,3 +1,5 @@
+import { Platform } from "react-native"
+
 export interface ConfigBaseProps {
   persistNavigation: "always" | "dev" | "prod" | "never"
   catchErrors: "always" | "dev" | "prod" | "never"
@@ -5,6 +7,7 @@ export interface ConfigBaseProps {
   passcodeLength: number
   walletPath: string
   network: string
+  isIOS: boolean
 }
 
 export type PersistNavigationConfig = ConfigBaseProps["persistNavigation"]
@@ -39,6 +42,11 @@ const BaseConfig: ConfigBaseProps = {
    * Network
    */
   network: "https://goerli.infura.io/v3/a374100574a041818a4d3e3afaa41fad",
+
+  /**
+   * Platform
+   */
+  isIOS: Platform.OS === "ios",
 }
 
 export default BaseConfig

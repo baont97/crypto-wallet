@@ -15,3 +15,10 @@ export const HomeTabs: HomeTab[] = [
     name: "home.tabs.nft",
   },
 ]
+
+export interface ElementPosition {
+  x: number
+  y: number
+  width: number
+  height: number
+}

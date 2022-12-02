@@ -1,5 +1,44 @@
 yarn.lock
 node_modules
-CryptoWallet.xcworkspace
-Pods
-Podfile.lock
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# BUCK
+buck-out/
+\.buckd/
+*.keystore
+!debug.keystore
+
+# VS Code
+.vscode
+
+# Expo
+.expo/*
+bin/Exponent.app
+
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# Bundle artifact
+*.jsbundle
+
+# CocoaPods
+/ios/Pods/

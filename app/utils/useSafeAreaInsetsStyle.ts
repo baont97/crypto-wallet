@@ -39,6 +39,6 @@ export function useSafeAreaInsetsStyle(
   const insets = useSafeAreaInsets()
 
   return safeAreaEdges.reduce((acc, e) => {
-    return { ...acc, [`${property}${propertySuffixMap[e]}`]: insets[edgeInsetMap[e] ?? e] }
+    return { ...acc, [`${property}${propertySuffixMap[e]}`]: insets[edgeInsetMap[e] ?? e] || 20 }
   }, {})
 }

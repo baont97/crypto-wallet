@@ -6,6 +6,7 @@ import { SettingsScreen } from "../screens/SettingsScreen"
 import { Icon, Text } from "../components"
 import { spacing } from "../theme"
 import { HomeStack } from "./HomeStack"
+import Config from "../config"
 
 export type AppBottomTabParamList = {
   HomeStack: undefined
@@ -23,7 +24,7 @@ export const AppBottomTab = observer(function AppBottomTab() {
   return (
     <BottomTab.Navigator
       screenOptions={{
-        tabBarStyle: { paddingVertical: spacing.small, minHeight: 100 },
+        tabBarStyle: { paddingVertical: spacing.small, minHeight: Config.isIOS ? 100 : 65 },
       }}
     >
       <BottomTab.Screen

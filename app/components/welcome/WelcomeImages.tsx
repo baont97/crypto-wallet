@@ -1,5 +1,5 @@
 import React from "react"
-import { Image, useWindowDimensions, View } from "react-native"
+import { Dimensions, Image, useWindowDimensions, View } from "react-native"
 import { Text } from "../Text"
 import { WelcomeItems } from "./WelcomeImages.types"
 import Animated, {
@@ -14,7 +14,10 @@ import { colors } from "../../theme"
 export interface WelcomeImageScrollViewProps {}
 
 export function WelcomeImageScrollView({}: WelcomeImageScrollViewProps) {
+  const dimensions = useWindowDimensions()
   const translationX = useSharedValue(0)
+
+  const IMG_WIDTH = dimensions.height / 2.5
 
   const scrollHandler = useAnimatedScrollHandler((event) => {
     translationX.value = event.contentOffset.x
@@ -31,7 +34,9 @@ export function WelcomeImageScrollView({}: WelcomeImageScrollViewProps) {
       >
         {WelcomeItems.map((x, i) => (
           <View key={i} className="w-screen">
-            <Image className="w-screen h-[vw]" source={x.image} />
+            <View className="items-center">
+              <Image style={{ width: IMG_WIDTH, height: IMG_WIDTH }} source={x.image} />
+            </View>
             <View className="p-6 flex-auto">
               <Text preset="bold" className="mb-2" size="xxl">
                 {x.title}
