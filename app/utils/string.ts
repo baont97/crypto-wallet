@@ -14,7 +14,7 @@ export const capitalize = (text: string): string => {
 export type ErrorType = "required" | "invalid"
 
 export const getFormErrorMessage = (fieldName: TxKeyPath, errorType: ErrorType): string => {
-  return translate(("errorMessage." + errorType) as TxKeyPath, [translate(fieldName)])
+  return translate(("errorMessage." + errorType) as TxKeyPath, { fieldName: translate(fieldName) })
 }
 
 export const getRandomId = () => uuid()

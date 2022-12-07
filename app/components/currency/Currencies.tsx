@@ -1,19 +1,34 @@
-import React, { FC, useEffect, useState } from "react"
+import React, { FC, ForwardedRef, ForwardRefRenderFunction, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { FlatList, Image, TouchableOpacity, TouchableOpacityProps, View } from "react-native"
+import {
+  FlatList,
+  Image,
+  ImageStyle,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+  ViewStyle,
+} from "react-native"
 import { Currency, useStores } from "../../models"
 import { Text } from "../Text"
 
 import * as Web3Wallet from "react-native-web3-wallet"
 import { Divider } from "../Divider"
 import { debounce } from "../../utils/common"
+import { EmptyState } from "../EmptyState"
+import { images } from "../../../assets"
 
 export interface CurrenciesProps {
   onItemPress: (currency: Currency) => void
+  filterFunct: (x: Currency, y: number, z: []) => boolean
+  ref: React.Ref<typeof Currencies>
 }
 
-export const Currencies = observer(
-  React.forwardRef(function ({ onItemPress }: CurrenciesProps, ref: React.Ref<typeof Currencies>) {
+export const Currencies: FC<CurrenciesProps> = observer(
+  React.forwardRef(function (
+    { onItemPress, filterFunct }: CurrenciesProps,
+    ref: React.Ref<typeof Currencies>,
+  ) {
     const rootStore = useStores()
 
     // states
@@ -33,13 +48,23 @@ export const Currencies = observer(
 
     return (
       <FlatList
-        data={rootStore.currencyStore.filterCurrencies(_keyword[0]) as Currency[]}
+        data={
+          rootStore.currencyStore.filterCurrencies(_keyword[0]).filter(filterFunct) as Currency[]
+        }
         keyExtractor={(_, index) => index + ""}
         renderItem={({ item }) => {
           return <CurrencyItem data={item} onPress={() => onItemPress(item)} />
         }}
         ItemSeparatorComponent={() => <Divider className="ml-[70px] h-[0.5px]" />}
         contentInsetAdjustmentBehavior="automatic"
+        ListEmptyComponent={
+          <EmptyState
+            content="No tokens found"
+            imageSource={images.emptyState.emptyBox}
+            imageStyle={$emptyStateImage}
+            style={$emptyStateContainer}
+          />
+        }
       />
     )
   }),
@@ -76,3 +101,12 @@ export const CurrencyItem: FC<CurrencyItemProps> = observer(function (props) {
     </TouchableOpacity>
   )
 })
+
+const $emptyStateContainer: ViewStyle = {
+  padding: 30,
+}
+
+const $emptyStateImage: ImageStyle = {
+  width: 72,
+  height: 72,
+}

@@ -1,16 +1,15 @@
 import React from "react"
 import { createBottomTabNavigator, BottomTabScreenProps } from "@react-navigation/bottom-tabs"
 import { observer } from "mobx-react-lite"
-import { HomeScreen } from "../screens"
-import { SettingsScreen } from "../screens/SettingsScreen"
 import { Icon, Text } from "../components"
 import { spacing } from "../theme"
 import { HomeStack } from "./HomeStack"
 import Config from "../config"
+import { SettingsStack } from "./SettingsStack"
 
 export type AppBottomTabParamList = {
   HomeStack: undefined
-  Settings: undefined
+  SettingsStack: undefined
 }
 
 export type AppBottomTabScreenProps<T extends keyof AppBottomTabParamList> = BottomTabScreenProps<
@@ -37,13 +36,14 @@ export const AppBottomTab = observer(function AppBottomTab() {
         }}
       />
       <BottomTab.Screen
-        name="Settings"
-        component={SettingsScreen}
+        name="SettingsStack"
+        component={SettingsStack}
         options={{
           tabBarIcon: ({ color, size }) => <Icon icon="settings" {...{ color, size }} />,
           tabBarLabel: ({ color }) => (
             <Text style={{ color }} tx="navigators.screenName.settings" />
           ),
+          headerShown: false,
         }}
       />
     </BottomTab.Navigator>

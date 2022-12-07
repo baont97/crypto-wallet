@@ -19,7 +19,11 @@ const Stack = createNativeStackNavigator<ReceiveStackParamList>()
 
 export const ReceiveStack = observer(function () {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerBackTitleVisible: false,
+      }}
+    >
       <Stack.Screen
         name="Currencies"
         component={CurrenciesScreen}

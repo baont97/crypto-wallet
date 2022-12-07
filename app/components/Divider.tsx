@@ -5,7 +5,7 @@ import { colors } from "../theme"
 
 export interface DividerProps extends ViewProps {}
 
-const StyledView = styled(View, "bg-neutral-300 h-[0.25]")
+const StyledView = styled(View, "bg-neutral-300 h-[0.5]")
 
 function _Divider(props: DividerProps) {
   const { style: $viewStyleOverride, ...rest } = props

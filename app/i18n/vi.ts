@@ -10,6 +10,17 @@ const vi: Translations = {
     mainWallet: "Ví chính",
     done: "Xong",
     share: "Chia sẻ",
+    max: "Tối đa",
+    next: "Tiếp",
+    send: "Gửi",
+    from: "Từ",
+    to: "Đến",
+    cancel: "Hủy",
+    main: "Chính",
+  },
+  trade: {
+    networkFee: "Phí",
+    maxTotal: "Tổng cộng",
   },
   welcome: {
     createNewWallet: "Tạo ví mới",
@@ -28,7 +39,9 @@ const vi: Translations = {
       settings: "Cài đặt",
       receive: "Nhận",
       send: "Gửi",
+      sendConfirmation: "Xác nhận",
       buy: "Mua",
+      manageWallet: "Quản lý ví",
     },
   },
   legal: {
@@ -81,6 +94,20 @@ const vi: Translations = {
       nft: "NFTs",
     },
   },
+  sendResult: {
+    information: {
+      title: "Gửi {{token}} thành công",
+      token: "Mã",
+      value: "Số lượng",
+      to: "Gửi đến ví",
+      txnFee: "Phí giao dịch",
+      txnHash: "Hash giao dịch",
+      confirmations: "Xác nhận",
+    },
+  },
+  settings: {
+    wallets: "Quản lý ví",
+  },
   input: {
     walletName: {
       label: "Tên ví",
@@ -91,12 +118,20 @@ const vi: Translations = {
       placeholder: "Cụm từ bí mật",
     },
     search: {
-      placeholder: "Tìm kiếm ở đây..."
-    }
+      placeholder: "Tìm kiếm ở đây...",
+    },
+    recipientAddress: {
+      label: "Địa chỉ ví người nhận",
+      placeholder: "Nhập địa chỉ ví",
+    },
+    amount: {
+      label: "Số lượng",
+      placeholder: "0.00",
+    },
   },
   errorMessage: {
-    required: "{0} là bắt buộc",
-    invalid: "{0} sai định dạng",
+    required: "{{fieldName}} là bắt buộc",
+    invalid: "{{fieldName}} sai định dạng",
     unknown: "Đã xảy ra lỗi. Vui lòng thử lại.",
     mnemonicWrongOrder: "Sai thứ tự, vui lòng thử lại!",
   },

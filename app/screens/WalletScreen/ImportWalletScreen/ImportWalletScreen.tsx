@@ -9,10 +9,10 @@ import { importMnemonic } from "react-native-web3-wallet"
 import { capitalize, getFormErrorMessage, getRandomId, getRandomName } from "../../../utils/string"
 import { colors } from "../../../theme"
 import { AppStackScreenProps } from "../../../navigators"
+import { useKeychain } from "../../../hooks"
 
 import Clipboard from "@react-native-clipboard/clipboard"
 import * as yup from "yup"
-import { useKeychain } from "../../../hooks"
 
 export const ImportWalletScreen: FC<AppStackScreenProps<"ImportWallet">> = observer(function ({
   route,

@@ -54,7 +54,7 @@ export interface TextProps extends RNTextProps {
 function _Text(props: TextProps) {
   const { weight, size, tx, txOptions, text, children, style: $styleOverride, ...rest } = props
 
-  const i18nText = tx && translate(tx, [], txOptions)
+  const i18nText = tx && translate(tx, txOptions)
   const content = i18nText || text || children
 
   const preset: Presets = $presets[props.preset] ? props.preset : "default"
@@ -108,7 +108,12 @@ const $presets = {
 
   subheading: [$baseStyle, $sizeStyles.lg, $fontWeightStyles.medium] as StyleProp<TextStyle>,
 
-  formLabel: [$baseStyle, $fontWeightStyles.medium] as StyleProp<TextStyle>,
+  formLabel: [
+    $baseStyle,
+    $sizeStyles.xs,
+    $fontWeightStyles.medium,
+    { color: colors.gray[400] },
+  ] as StyleProp<TextStyle>,
 
   formHelper: [$baseStyle, $sizeStyles.sm, $fontWeightStyles.normal] as StyleProp<TextStyle>,
 }

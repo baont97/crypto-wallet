@@ -8,6 +8,7 @@ export interface ConfigBaseProps {
   walletPath: string
   network: string
   isIOS: boolean
+  chainId: number
 }
 
 export type PersistNavigationConfig = ConfigBaseProps["persistNavigation"]
@@ -47,6 +48,11 @@ const BaseConfig: ConfigBaseProps = {
    * Platform
    */
   isIOS: Platform.OS === "ios",
+
+  /**
+   * Chain id of network
+   */
+  chainId: 5,
 }
 
 export default BaseConfig

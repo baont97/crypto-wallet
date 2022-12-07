@@ -248,7 +248,7 @@ export const TextField = styled<
     style: true,
     containerStyle: true,
     inputWrapperStyle: true,
-    inputContainerStyle: true
+    inputContainerStyle: true,
   },
 })
 
@@ -261,8 +261,8 @@ const $inputWrapperStyle: ViewStyle = {
   alignItems: "flex-start",
   borderWidth: 1,
   borderRadius: 4,
-  backgroundColor: colors.primary[200],
-  borderColor: colors.primary[400],
+  backgroundColor: colors.white,
+  borderColor: colors.gray[200],
   overflow: "hidden",
 }
 
@@ -270,7 +270,7 @@ const $inputStyle: TextStyle = {
   flex: 1,
   alignSelf: "stretch",
   fontFamily: typography.primary.normal,
-  color: colors.gray[400],
+  color: colors.black,
   fontSize: 16,
   height: 24,
   // https://github.com/facebook/react-native/issues/21720#issuecomment-532642093

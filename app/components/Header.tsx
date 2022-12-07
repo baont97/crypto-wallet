@@ -167,7 +167,7 @@ export function Header(props: HeaderProps) {
 
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
 
-  const titleContent = titleTx ? translate(titleTx, [], titleTxOptions) : title
+  const titleContent = titleTx ? translate(titleTx, titleTxOptions) : title
 
   return (
     <View style={[$container, $containerInsets, { backgroundColor }, $containerStyleOverride]}>
@@ -214,7 +214,7 @@ export function Header(props: HeaderProps) {
 function HeaderAction(props: HeaderActionProps) {
   const { backgroundColor, icon, text, tx, txOptions, onPress, ActionComponent, iconColor } = props
 
-  const content = tx ? translate(tx, [], txOptions) : text
+  const content = tx ? translate(tx, txOptions) : text
 
   if (ActionComponent) return ActionComponent
 

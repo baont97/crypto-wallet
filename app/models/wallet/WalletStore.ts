@@ -1,4 +1,5 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { resetRoot } from "../../navigators"
 import { withSetPropAction } from "../helpers/withSetPropAction"
 import { BalanceModel, Wallet, WalletModel } from "./WalletStore.models"
 
@@ -36,12 +37,22 @@ export const WalletStoreModel = types
   .actions(withSetPropAction)
   .actions((self) => ({
     updateWalletList: function (input: Wallet, type: "add" | "remove" | "edit") {
+      const { index } = this.findWalletByAddress(input.address)
       switch (type) {
         case "add":
-          if (!self.wallets.length) {
+          if (index === -1) {
+            self.wallets.push(input)
             self.setProp("activeWalletId", input.id)
+
+            console.log("self.wallets.length > 1", self.wallets.length > 1)
+
+            if (self.wallets.length > 1) {
+              resetRoot({
+                index: 0,
+                routes: [{ name: "AppBottomTab" }],
+              })
+            }
           }
-          self.wallets.push(input)
           break
         case "remove":
           if (self.wallets.length === 1) {
@@ -50,10 +61,17 @@ export const WalletStoreModel = types
           self.wallets.replace(self.wallets.filter((item) => item.id !== input.id))
           break
         case "edit":
-          const index = self.wallets.findIndex((item) => item.id === input.id)
           if (index !== -1) {
             self.wallets[index] = input
           }
+          break
+      }
+    },
+    findWalletByAddress(input: string) {
+      const index = self.wallets.findIndex((item) => item.address === input)
+      return {
+        index,
+        wallet: self.wallets[index],
       }
     },
     clearWallet() {

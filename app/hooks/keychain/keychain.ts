@@ -4,7 +4,7 @@ import BcryptReactNative from "bcrypt-react-native"
 
 const saltRounds = 10
 
-export type KeychainService = "PASSCODE" | "NONE"
+export type KeychainService = "PASSCODE" | "NONE" | string
 export type KeychainData = { username: string; password: string }
 export type SaveParams = { password: string; dateTime: string; service?: string }
 export type CompareParams = {
@@ -29,8 +29,10 @@ export type UseKeychainResult = {
 const DefaultData: KeychainData = { username: "", password: "" }
 
 export const useKeychain = (props: UseKeychainProps): UseKeychainResult => {
-  const service = (props.service || "").replace(/[^\w\s]/gi, "").toUpperCase()
+  const formatService = (raw: string) => (raw || "").replace(/[^\w\s]/gi, "").toUpperCase()
+
   const _data = useState<KeychainData>(DefaultData)
+  const service = formatService(props.service)
 
   const boostrapAsync = () => {
     if (service !== "NONE") load(service).then(_data[1])
@@ -38,12 +40,14 @@ export const useKeychain = (props: UseKeychainProps): UseKeychainResult => {
   }
 
   const hashAndSave = async (password: string, dateTime: string, serviceOverride?: string) => {
+    const _service = formatService(serviceOverride)
+
     if (props.needHash) {
       const salt = await BcryptReactNative.getSalt(saltRounds)
       const hash = await BcryptReactNative.hash(salt, password)
-      await save(hash, dateTime, serviceOverride || service)
+      await save(hash, dateTime, _service || service)
     } else {
-      await save(password, dateTime, serviceOverride || service)
+      await save(password, dateTime, _service || service)
     }
   }
 
@@ -58,7 +62,7 @@ export const useKeychain = (props: UseKeychainProps): UseKeychainResult => {
   }, [service])
 
   return {
-    save: (params: SaveParams) => hashAndSave(params.password, params.dateTime, props.service),
+    save: (params: SaveParams) => hashAndSave(params.password, params.dateTime, params.service),
     load: () => load(service),
     reset: () => reset(service),
     compare,

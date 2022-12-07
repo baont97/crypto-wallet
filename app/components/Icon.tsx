@@ -14,7 +14,7 @@ import { styled } from "nativewind"
 
 export type IconTypes = keyof typeof iconRegistry
 
-interface IconProps extends TouchableOpacityProps {
+export interface IconProps extends TouchableOpacityProps {
   /**
    * The name of the icon
    */
@@ -126,6 +126,10 @@ export const iconRegistry = {
   search: require("../../assets/icons/search.png"),
   copy: require("../../assets/icons/copy.png"),
   share: require("../../assets/icons/share.png"),
+  qrScan: require("../../assets/icons/qr-scan.png"),
+  plus: require("../../assets/icons/plus.png"),
+  walletColorful: require("../../assets/icons/wallet-colorful.png"),
+  info: require("../../assets/icons/info.png"),
 }
 
 const $imageStyle: ImageStyle = {

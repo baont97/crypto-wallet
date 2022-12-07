@@ -1,3 +1,5 @@
 export * from "./CreateWalletScreen.types"
 export * from "./CreateNewWalletScreen"
 export * from "./ImportWalletScreen"
+export * from "./ManageWalletScreen"
+export * from "./AddWalletScreen"

@@ -8,6 +8,17 @@ const en = {
     mainWallet: "Main Wallet",
     done: "Done",
     share: "Share",
+    max: "Max",
+    next: "Next",
+    send: "Send",
+    from: "From",
+    to: "To",
+    cancel: "Cancel",
+    main: "Main",
+  },
+  trade: {
+    networkFee: "Network Fee",
+    maxTotal: "Max Total",
   },
   welcome: {
     createNewWallet: "Create a new wallet",
@@ -26,7 +37,9 @@ const en = {
       settings: "Settings",
       receive: "Receive",
       send: "Send",
+      sendConfirmation: "Confirm",
       buy: "Buy",
+      manageWallet: "Wallets",
     },
   },
   legal: {
@@ -79,6 +92,20 @@ const en = {
       nft: "NFTs",
     },
   },
+  sendResult: {
+    information: {
+      title: "Send {{token}} successfully",
+      token: "Token",
+      value: "Value",
+      to: "To address",
+      txnFee: "Transaction fee",
+      txnHash: "Transaction hash",
+      confirmations: "Confirmations",
+    },
+  },
+  settings: {
+    wallets: "Wallets",
+  },
   input: {
     walletName: {
       label: "Name",
@@ -91,10 +118,18 @@ const en = {
     search: {
       placeholder: "Search here...",
     },
+    recipientAddress: {
+      label: "Recipient Address",
+      placeholder: "Enter your recipient address",
+    },
+    amount: {
+      label: "Amount",
+      placeholder: "0.00",
+    },
   },
   errorMessage: {
-    required: "{0} is required",
-    invalid: "Invalid {0}",
+    required: "{{fieldName}} is required",
+    invalid: "Invalid {{fieldName}}",
     unknown: "Something went wrong. Please try again.",
     mnemonicWrongOrder: "Invalid order. Try again!",
   },

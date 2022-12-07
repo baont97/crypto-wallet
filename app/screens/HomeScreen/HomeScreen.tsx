@@ -29,13 +29,13 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated"
-
-import i18n from "i18n-js"
 import { translate } from "../../i18n"
 import { ScrollView } from "react-native-gesture-handler"
+
+import i18n from "i18n-js"
 import Config from "../../config"
 
-export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function () {
+export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ({ navigation }) {
   // hooks
   const rootStore = useStores()
   const insets = useSafeAreaInsets()
@@ -163,6 +163,7 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ()
   const handleTabPress = (index: number) => () => {
     translationX.value = withTiming(index * dimentions.width)
   }
+  const handleWalletPress = () => {}
 
   // components
   const renderTabs = () => (
@@ -209,8 +210,7 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ()
           }
           onScrollEndDrag={(e) => {
             if (scrollViewRef.current) {
-              const isScrollDown =
-                e.nativeEvent.contentOffset.y > (_tabPosition[0].y - headerHeight - insets.top) / 2
+              const isScrollDown = e.nativeEvent.contentOffset.y > _balancePosition[0].height
               const nextScrollOffsetY = isScrollDown ? _tabPosition[0].y : 0
               scrollViewRef.current.scrollTo({
                 y: nextScrollOffsetY,
@@ -226,7 +226,9 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ()
             >
               ${i18n.toCurrency(rootStore.walletStore.totalBalanceInFiat, { unit: "" })}
             </Text>
-            <Text className="text-white">{rootStore.walletStore.activeWallet.name}</Text>
+            <Text onPress={handleWalletPress} className="text-white">
+              {rootStore.walletStore.activeWallet.name}
+            </Text>
 
             <HomeActions />
           </View>
