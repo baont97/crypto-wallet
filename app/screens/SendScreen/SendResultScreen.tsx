@@ -7,10 +7,10 @@ import { colors } from "../../theme"
 import { View } from "react-native"
 import { Erc20Abi } from "../../abis"
 import { ethers } from "ethers"
-
-import * as Web3Wallet from "react-native-web3-wallet"
 import { useMount } from "../../utils/useIsMounted"
+
 import Config from "../../config"
+import { web3 } from "../../utils/web3"
 
 export const SendResultScreen: FC<SendStackScreenProps<"SendResult">> = observer(function ({
   route,
@@ -32,14 +32,14 @@ export const SendResultScreen: FC<SendStackScreenProps<"SendResult">> = observer
     const iface = new ethers.utils.Interface(Erc20Abi)
     let decodedData = iface.parseTransaction({ data: tx.data, value: tx.value })
 
-    return Web3Wallet.bigNumberFormatUnits(decodedData.args[1])
+    return web3.ether.bigNumberFormatUnits(decodedData.args[1])
   }, [tx])
 
   // functions
   const boostrapAsync = async () => {
     const txReceipt = currency.contractAddress
-      ? await Web3Wallet.waitForContractTransaction(tx)
-      : await Web3Wallet.waitForTransaction(Config.network, tx.hash)
+      ? await web3.ether.waitForContractTransaction(tx)
+      : await web3.ether.waitForTransaction({ network: Config.network, transactionHash: tx.hash })
     _txReceipt[1](txReceipt)
   }
 
@@ -81,7 +81,7 @@ export const SendResultScreen: FC<SendStackScreenProps<"SendResult">> = observer
               <View className="py-2 flex-row items-center justify-between">
                 <Text tx="sendResult.information.txnFee" />
                 <Text>
-                  {Web3Wallet.bigNumberFormatUnits(
+                  {web3.ether.bigNumberFormatUnits(
                     _txReceipt[0].gasUsed.mul(_txReceipt[0].effectiveGasPrice),
                     currency.decimals,
                   )}{" "}

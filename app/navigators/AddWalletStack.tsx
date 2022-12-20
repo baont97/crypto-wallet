@@ -8,14 +8,14 @@ import {
   ImportWalletScreen,
   VerifySecretPhraseScreen,
 } from "../screens"
-import { IWallet } from "react-native-web3-wallet/interface"
 import { translate } from "../i18n"
+import { Web3Wallet } from "../utils/web3/ether/ether.types"
 
 export type AddWalletStackParamList = {
   AddWallet: undefined
   ImportWallet: { password: string }
   GenerateSecretPhrase: { password: string }
-  VerifySecretPhrase: { wallet: IWallet; mnemonicHeight: number }
+  VerifySecretPhrase: { wallet: Web3Wallet; mnemonicHeight: number }
 }
 
 export type AddWalletStackScreenProps<T extends keyof AddWalletStackParamList> = StackScreenProps<

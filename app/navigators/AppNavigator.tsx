@@ -26,12 +26,12 @@ import { navigationTheme } from "../theme/theme"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { AppBottomTab } from "./AppBottomTab"
 import { useStores } from "../models"
-import { IWallet } from "react-native-web3-wallet/interface"
 import { translate } from "../i18n"
-import { spacing, typography } from "../theme"
+import { typography } from "../theme"
 import { useBalance } from "../hooks"
 import { ReceiveStack } from "./ReceiveStack"
 import { SendStack } from "./SendStack"
+import { Menemonic } from "../utils/web3/ether/ether.types"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -68,7 +68,7 @@ export type AppStackParamList = {
    * Create new wallet
    */
   GenerateSecretPhrase: { password: string }
-  VerifySecretPhrase: { wallet: IWallet; mnemonicHeight: number }
+  VerifySecretPhrase: { mnemonic: Menemonic; mnemonicHeight: number }
 }
 
 /**

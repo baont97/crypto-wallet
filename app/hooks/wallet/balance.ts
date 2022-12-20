@@ -2,8 +2,9 @@ import { useEffect } from "react"
 import { Balance, Currency, useStores } from "../../models"
 import { Erc20Abi } from "../../abis"
 import { MarketPrice } from "./balance.types"
+import { web3 } from "../../utils/web3"
+import { getAddressByChain } from "../../utils/common"
 
-import * as Web3Wallet from "react-native-web3-wallet"
 import BigNumber from "bignumber.js"
 import Config from "../../config"
 
@@ -37,14 +38,19 @@ export const useBalance = () => {
    * @returns return balance of token
    */
   const fetchBalance = async (currency: Currency): Promise<CustomBalance> => {
+    const { address } = getAddressByChain(currency.chain, activeWallet.addresses)
+
     const response = !currency.contractAddress
-      ? await Web3Wallet.getBalance(Config.network, activeWallet.address)
-      : await Web3Wallet.getContractBalance(
-          Config.network,
-          currency.contractAddress,
-          Erc20Abi,
-          activeWallet.address,
-        )
+      ? await web3.ether.getBalance({
+          network: Config.network,
+          address,
+        })
+      : await web3.ether.getContractBalance({
+          network: Config.network,
+          contractAddress: currency.contractAddress,
+          contractAbi: Erc20Abi,
+          address,
+        })
 
     if (!response) {
       return {
@@ -55,7 +61,7 @@ export const useBalance = () => {
         priceChangePercentage24h: 0,
       }
     } else {
-      const balance = Number(Web3Wallet.bigNumberFormatUnits(response, currency.decimals))
+      const balance = Number(web3.ether.bigNumberFormatUnits(response, currency.decimals))
       const { current_price: exchangeRate, price_change_percentage_24h: priceChangePercentage24h } =
         (await fetchMartket(currency.id)) || { current_price: 0, price_change_24h: 0 }
 

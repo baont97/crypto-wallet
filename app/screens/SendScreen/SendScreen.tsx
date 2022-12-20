@@ -17,6 +17,7 @@ import * as yup from "yup"
 import { useMount } from "../../utils/useIsMounted"
 import { load } from "../../utils/keychain"
 import { useKeychain } from "../../hooks"
+import { getAddressByChain } from "../../utils/common"
 
 export const SendScreen: FC<SendStackScreenProps<"Send">> = observer(function ({
   route,
@@ -51,7 +52,8 @@ export const SendScreen: FC<SendStackScreenProps<"Send">> = observer(function ({
           "match",
           getFormErrorMessage("input.recipientAddress.label", "invalid"),
           function (value: string) {
-            return value !== activeWallet.address
+            const { address } = getAddressByChain(currency.chain, activeWallet.addresses)
+            return value !== address
           },
         )
         .required(getFormErrorMessage("input.recipientAddress.label", "required"))

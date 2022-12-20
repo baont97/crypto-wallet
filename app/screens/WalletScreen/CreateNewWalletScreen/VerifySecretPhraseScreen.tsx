@@ -1,17 +1,20 @@
 import { observer } from "mobx-react-lite"
+import { IMSTArray } from "mobx-state-tree"
 import React, { FC, useMemo, useState } from "react"
-import { TouchableOpacity, TouchableOpacityProps, View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 import { Button, Icon, Screen, Text } from "../../../components"
+import { SUPPORTED_CHAINS } from "../../../config/contants"
 import { useKeychain } from "../../../hooks"
 import { translate } from "../../../i18n"
-import { useStores } from "../../../models"
+import { AddressModel, useStores } from "../../../models"
 import { AppStackScreenProps } from "../../../navigators"
 import { colors, spacing } from "../../../theme"
 import { getRandomId, getRandomName } from "../../../utils/string"
+import { web3 } from "../../../utils/web3"
 import { MnemonicTexts } from "./GenerateSecretPhraseScreen"
 
 export const VerifySecretPhraseScreen: FC<AppStackScreenProps<"VerifySecretPhrase">> = observer(
-  function ({ route, navigation }) {
+  function ({ route }) {
     // hooks
     const rootStore = useStores()
     const keychain = useKeychain({
@@ -20,11 +23,12 @@ export const VerifySecretPhraseScreen: FC<AppStackScreenProps<"VerifySecretPhras
     })
 
     // navigators
-    const wallet = route.params.wallet
     const mnemonicHeight = route.params.mnemonicHeight
+    const { mnemonic, shuffledMnemonic } = route.params.mnemonic
 
     // states
-    const _mnemonicPicking = useState<string[]>([])
+    const _mnemonicPicking = useState<string[]>(__DEV__ ? mnemonic : [])
+    const _loading = useState<boolean>(false)
 
     // functions
     const handleMnemonicItemPick = (input: string) => {
@@ -38,6 +42,12 @@ export const VerifySecretPhraseScreen: FC<AppStackScreenProps<"VerifySecretPhras
     }
 
     const handleSubmit = async () => {
+      const wallet = await web3.ether.createWallet({
+        mnemonic: mnemonic.join(" "),
+        mnemonicPassword: "",
+        password: "",
+      })
+
       const id = getRandomId()
 
       await keychain.save({
@@ -53,7 +63,22 @@ export const VerifySecretPhraseScreen: FC<AppStackScreenProps<"VerifySecretPhras
       }
 
       rootStore.walletStore.updateWalletList(
-        { id, name: walletName, address: wallet.address },
+        {
+          id,
+          name: walletName,
+          addresses: [
+            {
+              id: getRandomId(),
+              address: wallet.address,
+              chain: SUPPORTED_CHAINS.ETH,
+            },
+            {
+              id: getRandomId(),
+              address: "",
+              chain: SUPPORTED_CHAINS.BTC,
+            },
+          ] as IMSTArray<typeof AddressModel>,
+        },
         "add",
       )
     }
@@ -61,10 +86,10 @@ export const VerifySecretPhraseScreen: FC<AppStackScreenProps<"VerifySecretPhras
     // memos
     const isWrongOrder = useMemo(() => {
       const pickingAsString = _mnemonicPicking[0].join("")
-      const originalAsString = wallet.mnemonic.join("")
+      const originalAsString = mnemonic.join("")
 
       return originalAsString.slice(0, pickingAsString.length) !== pickingAsString
-    }, [_mnemonicPicking[0], wallet.mnemonic])
+    }, [_mnemonicPicking[0], mnemonic])
     const mnemonicList = useMemo(
       () => <MnemonicTexts mnemonic={_mnemonicPicking[0]} onPick={handleMnemonicItemPick} />,
       [_mnemonicPicking[0], handleMnemonicItemPick],
@@ -72,13 +97,13 @@ export const VerifySecretPhraseScreen: FC<AppStackScreenProps<"VerifySecretPhras
     const suffleMnemonicList = useMemo(
       () => (
         <SuffleMnemonicTexts
-          mnemonic={wallet.shuffleMnemonic}
+          mnemonic={shuffledMnemonic}
           pickingMnemonic={_mnemonicPicking[0]}
           onPick={handleMnemonicItemPick}
           disabled={isWrongOrder}
         />
       ),
-      [wallet, _mnemonicPicking[0], handleMnemonicItemPick],
+      [shuffledMnemonic, _mnemonicPicking[0], handleMnemonicItemPick],
     )
 
     return (
@@ -110,8 +135,9 @@ export const VerifySecretPhraseScreen: FC<AppStackScreenProps<"VerifySecretPhras
           preset="filled"
           tx="common.continue"
           className="mx-6"
-          disabled={isWrongOrder || _mnemonicPicking[0].length !== wallet.mnemonic.length}
+          disabled={_loading[0] || isWrongOrder || _mnemonicPicking[0].length !== mnemonic.length}
           onPress={handleSubmit}
+          loading={_loading[0]}
         />
       </Screen>
     )

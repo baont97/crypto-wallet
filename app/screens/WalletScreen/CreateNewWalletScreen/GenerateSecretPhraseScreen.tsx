@@ -1,7 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from "react"
 import { ActivityIndicator, Alert, TouchableOpacity, View } from "react-native"
-import { createWallet } from "react-native-web3-wallet"
-import { IWallet } from "react-native-web3-wallet/interface"
 import { Button, Screen, Text } from "../../../components"
 import { translate } from "../../../i18n"
 import { AppStackScreenProps } from "../../../navigators"
@@ -11,6 +9,8 @@ import { useIsMounted } from "../../../utils/useIsMounted"
 import Config from "../../../config"
 import Clipboard from "@react-native-clipboard/clipboard"
 import Toast from "react-native-simple-toast"
+import { web3 } from "../../../utils/web3"
+import { Menemonic } from "../../../utils/web3/ether/ether.types"
 
 export const GenerateSecretPhraseSreen: FC<AppStackScreenProps<"GenerateSecretPhrase">> = ({
   navigation,
@@ -19,40 +19,34 @@ export const GenerateSecretPhraseSreen: FC<AppStackScreenProps<"GenerateSecretPh
   const isMounted = useIsMounted()
 
   // states
-  const _wallet = useState<IWallet>()
+  const _mnemonic = useState<Menemonic>()
   const _mnemonicHeight = useState<number>(0)
 
   // effects
   useEffect(() => {
-    if (isMounted() && !_wallet[0]) {
-      createWallet("", Config.walletPath)
-        .then((res) => {
-          _wallet[1](res)
-        })
-        .catch(() => {
-          Alert.alert(translate("errorMessage.unknown"), "", [{ onPress: navigation.goBack }])
-        })
+    if (isMounted() && !_mnemonic[0]) {
+      _mnemonic[1](web3.ether.generateMnemonic())
     }
-  }, [_wallet[0]])
+  }, [_mnemonic[0]])
 
   // memos
   const mnemonicList = useMemo(
     () =>
-      !_wallet[0] ? null : (
-        <MnemonicTexts heightCallback={_mnemonicHeight[1]} mnemonic={_wallet[0].mnemonic} />
+      !_mnemonic[0] ? null : (
+        <MnemonicTexts heightCallback={_mnemonicHeight[1]} mnemonic={_mnemonic[0].mnemonic} />
       ),
-    [_wallet[0]],
+    [_mnemonic[0]],
   )
 
   // functions
   const handleCopy = () => {
-    Clipboard.setString(_wallet[0].mnemonic.join(" "))
+    Clipboard.setString(_mnemonic[0].mnemonic.join(" "))
     Toast.show(translate("common.copied"), Toast.SHORT)
   }
 
   const handleContinue = () => {
     navigation.navigate("VerifySecretPhrase", {
-      wallet: _wallet[0],
+      mnemonic: _mnemonic[0],
       mnemonicHeight: _mnemonicHeight[0],
     })
   }
@@ -71,7 +65,7 @@ export const GenerateSecretPhraseSreen: FC<AppStackScreenProps<"GenerateSecretPh
       </View>
 
       <View className="p-6 flex-auto">
-        {!Boolean(_wallet[0]) ? (
+        {!Boolean(_mnemonic[0]) ? (
           <ActivityIndicator color={colors.black} />
         ) : (
           <>
@@ -94,7 +88,7 @@ export const GenerateSecretPhraseSreen: FC<AppStackScreenProps<"GenerateSecretPh
         preset="filled"
         tx="common.continue"
         className="mx-6"
-        disabled={!Boolean(_wallet[0])}
+        disabled={!Boolean(_mnemonic[0])}
         onPress={handleContinue}
       />
     </Screen>

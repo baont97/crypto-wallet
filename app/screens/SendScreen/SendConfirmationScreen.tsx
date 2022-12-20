@@ -10,11 +10,13 @@ import { useKeychain } from "../../hooks"
 import { useMount } from "../../utils/useIsMounted"
 import { Buffer } from "buffer"
 import { Erc20Abi } from "../../abis"
+import { getAddressByChain } from "../../utils/common"
+import { web3 } from "../../utils/web3"
+import { ethers } from "ethers"
 
 import BigNumber from "bignumber.js"
 import i18n from "i18n-js"
 import Config from "../../config"
-import * as Web3Wallet from "react-native-web3-wallet"
 
 export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">> = observer(
   function ({ route, navigation }) {
@@ -32,6 +34,7 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
 
     // navigators
     const { currency, data } = route.params
+    const { address } = getAddressByChain(currency.chain, activeWallet.addresses)
     const currencyWallet = rootStore.walletStore.getBalanceByCurrencyId(currency.id)
     const nativeCurrencyWallet = rootStore.walletStore.getBalanceByCurrencyId("ethereum")
     useHeaderOption({
@@ -42,8 +45,8 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
 
     // states
     const _loading = useState<boolean>(true)
-    const _gasLimit = useState<any>(() => Web3Wallet.createBigNumber(100000))
-    const _gasPrice = useState<any>()
+    const _gasLimit = useState<ethers.BigNumber>(() => web3.ether.createBigNumber(100000))
+    const _gasPrice = useState<ethers.BigNumber>()
 
     // variables
     const currencyAmount = i18n.toCurrency(Number(data.amount), {
@@ -59,9 +62,9 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
     })
     const fee =
       _gasPrice[0] && _gasLimit[0]
-        ? Web3Wallet.bigNumberFormatUnits(_gasPrice[0].mul(_gasLimit[0]))
-        : 0
-    const rawFiatFee = new BigNumber(fee).multipliedBy(nativeCurrencyWallet.exchangeRate).toString()
+        ? web3.ether.bigNumberFormatUnits(_gasPrice[0].mul(_gasLimit[0]))
+        : web3.ether.createBigNumber(0)
+    const rawFiatFee = fee.mul(nativeCurrencyWallet.exchangeRate).toString()
     const fiatFee = i18n.toCurrency(Number(rawFiatFee), {
       unit: "",
       precision: 8,
@@ -78,11 +81,11 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
 
     // functions
     const getGasPrice = async () => {
-      const response = await Web3Wallet.getGasPrice(Config.network)
+      const response = await web3.ether.getGasPrice({ network: Config.network })
       return response
     }
     const getNonce = async () => {
-      const response = await Web3Wallet.getNonce(Config.network, activeWallet.address)
+      const response = await web3.ether.getNonce({ network: Config.network, address })
       return response
     }
 
@@ -94,20 +97,26 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
       if (currency.contractAddress) {
         createTxnForNonETH({ gasPrice, nonce })
       } else {
-        const signedTx = await Web3Wallet.signTransaction(
+        const signedTx = await web3.ether.signTransaction({
           keystore,
-          "",
+          password: "",
           nonce,
-          _gasLimit[0],
+          gasLimit: _gasLimit[0],
           gasPrice,
-          data.address,
-          Config.chainId,
-          data.amount + "",
-          "0x" + Buffer.from("Bao send").toString("hex"),
-        )
-
+          toAddress: data.address,
+          chainId: Config.chainId,
+          amount: data.amount + "",
+          data:
+            "0x" +
+            Buffer.from(`sparkminds.net---send ${data.amount} ${currency.shortName}`).toString(
+              "hex",
+            ),
+        })
         if (signedTx) {
-          const tx = await Web3Wallet.sendTransaction(Config.network, signedTx)
+          const tx = await web3.ether.sendTransaction({
+            network: Config.network,
+            signedTransaction: signedTx,
+          })
 
           if (tx) {
             navigation.replace("SendResult", {
@@ -121,19 +130,19 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
     }
 
     const createTxnForNonETH = async ({ nonce, gasPrice }) => {
-      const tx = await Web3Wallet.contractTransaction(
-        Config.network,
-        currency.contractAddress,
-        Erc20Abi,
+      const tx = await web3.ether.contractTransaction({
+        network: Config.network,
+        contractAddress: currency.contractAddress,
+        contractAbi: Erc20Abi,
         keystore,
-        "",
+        password: "",
         nonce,
-        _gasLimit[0],
+        gasLimit: _gasLimit[0],
         gasPrice,
-        data.address,
-        data.amount + "",
-        currency.decimals,
-      )
+        toAddress: data.address,
+        amount: data.amount + "",
+        decims: currency.decimals,
+      })
 
       if (tx) {
         navigation.replace("SendResult", { tx, currency })
@@ -174,7 +183,7 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
           <View className="p-6">
             <Text tx="common.from" />
             <Text numberOfLines={1} ellipsizeMode="middle" className="text-sm text-gray-500 mt-1">
-              {activeWallet.address}
+              {address}
             </Text>
           </View>
           <Divider />

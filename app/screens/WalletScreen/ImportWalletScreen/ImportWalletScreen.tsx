@@ -4,15 +4,17 @@ import { Button, Screen, Text, TextField } from "../../../components"
 import { Alert, View } from "react-native"
 import { useFormik } from "formik"
 import { ImportWalletModel } from "../CreateWalletScreen.types"
-import { useStores } from "../../../models"
-import { importMnemonic } from "react-native-web3-wallet"
+import { AddressModel, useStores } from "../../../models"
 import { capitalize, getFormErrorMessage, getRandomId, getRandomName } from "../../../utils/string"
 import { colors } from "../../../theme"
 import { AppStackScreenProps } from "../../../navigators"
 import { useKeychain } from "../../../hooks"
+import { SUPPORTED_CHAINS } from "../../../config/contants"
+import { IMSTArray, _NotCustomized } from "mobx-state-tree"
 
 import Clipboard from "@react-native-clipboard/clipboard"
 import * as yup from "yup"
+import { web3 } from "../../../utils/web3"
 
 export const ImportWalletScreen: FC<AppStackScreenProps<"ImportWallet">> = observer(function ({
   route,
@@ -35,7 +37,11 @@ export const ImportWalletScreen: FC<AppStackScreenProps<"ImportWallet">> = obser
     },
     onSubmit: function (values) {
       _isImporting[1](true)
-      importMnemonic(values.mnemonic, "")
+      web3.ether
+        .importMnemonic({
+          mnemonic: values.mnemonic,
+          password: "",
+        })
         .then(async (res) => {
           const id = getRandomId()
 
@@ -46,7 +52,23 @@ export const ImportWalletScreen: FC<AppStackScreenProps<"ImportWallet">> = obser
           })
 
           rootStore.walletStore.updateWalletList(
-            { id, name: values.walletName, address: res.address },
+            {
+              id,
+              name: values.walletName,
+              addresses: [
+                {
+                  id: getRandomId() as string,
+                  chain: SUPPORTED_CHAINS.ETH,
+                  address: res.address,
+                },
+                {
+                  id: getRandomId() as string,
+                  chain: SUPPORTED_CHAINS.BTC,
+                  // temporary
+                  address: getRandomId(),
+                },
+              ] as IMSTArray<typeof AddressModel>,
+            },
             "add",
           )
         })

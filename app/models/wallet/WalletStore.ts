@@ -37,7 +37,8 @@ export const WalletStoreModel = types
   .actions(withSetPropAction)
   .actions((self) => ({
     updateWalletList: function (input: Wallet, type: "add" | "remove" | "edit") {
-      const { index } = this.findWalletByAddress(input.address)
+      const { index } = this.findWalletByAddresses(input.addresses.map((item) => item.address))
+
       switch (type) {
         case "add":
           if (index === -1) {
@@ -67,8 +68,10 @@ export const WalletStoreModel = types
           break
       }
     },
-    findWalletByAddress(input: string) {
-      const index = self.wallets.findIndex((item) => item.address === input)
+    findWalletByAddresses(input: string[]) {
+      const index = self.wallets.findIndex((item) =>
+        item.addresses.some(({ address }) => input.includes(address)),
+      )
       return {
         index,
         wallet: self.wallets[index],

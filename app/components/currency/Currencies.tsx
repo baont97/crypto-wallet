@@ -11,12 +11,11 @@ import {
 } from "react-native"
 import { Currency, useStores } from "../../models"
 import { Text } from "../Text"
-
-import * as Web3Wallet from "react-native-web3-wallet"
 import { Divider } from "../Divider"
 import { debounce } from "../../utils/common"
 import { EmptyState } from "../EmptyState"
 import { images } from "../../../assets"
+import { web3 } from "../../utils/web3"
 
 export interface CurrenciesProps {
   onItemPress: (currency: Currency) => void
@@ -91,8 +90,8 @@ export const CurrencyItem: FC<CurrencyItemProps> = observer(function (props) {
         </View>
 
         <Text>
-          {Web3Wallet.bigNumberFormatUnits(
-            Web3Wallet.bigNumberParseUnits(balance.native + "", data.decimals),
+          {web3.ether.bigNumberFormatUnits(
+            web3.ether.bigNumberParseUnits(balance.native + "", data.decimals),
             data.decimals,
           )}{" "}
           {data.shortName}

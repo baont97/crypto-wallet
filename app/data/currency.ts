@@ -1,3 +1,4 @@
+import { SUPPORTED_CHAINS } from "../config/contants"
 import { Currency } from "../models/currency/CurrencyStore.models"
 
 /**
@@ -13,6 +14,7 @@ export const Currencies: Currency[] = [
     contractAddress: "",
     image: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
     priceChangePercentage24h: 0,
+    chain: SUPPORTED_CHAINS.ETH,
   },
   {
     id: "uniswap",
@@ -22,6 +24,7 @@ export const Currencies: Currency[] = [
     decimals: 18,
     image: "https://s2.coinmarketcap.com/static/img/coins/64x64/7083.png",
     priceChangePercentage24h: 0,
+    chain: SUPPORTED_CHAINS.ETH,
   },
   {
     id: "dai",
@@ -31,6 +34,7 @@ export const Currencies: Currency[] = [
     decimals: 18,
     image: "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
     priceChangePercentage24h: 0,
+    chain: SUPPORTED_CHAINS.ETH,
   },
   {
     id: "force-bridge-fiatc",
@@ -40,6 +44,7 @@ export const Currencies: Currency[] = [
     decimals: 6,
     image: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
     priceChangePercentage24h: 0,
+    chain: SUPPORTED_CHAINS.ETH,
   },
   {
     id: "chainlink",
@@ -49,5 +54,6 @@ export const Currencies: Currency[] = [
     decimals: 18,
     image: "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
     priceChangePercentage24h: 0,
+    chain: SUPPORTED_CHAINS.ETH,
   },
 ]

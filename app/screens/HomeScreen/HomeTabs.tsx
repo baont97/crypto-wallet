@@ -12,8 +12,7 @@ import { Divider, Text } from "../../components"
 import { Currency, useStores } from "../../models"
 import { HomeStackParamList } from "../../navigators/HomeStack"
 import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated"
-
-import * as Web3Wallet from "react-native-web3-wallet"
+import { web3 } from "../../utils/web3"
 
 interface HomeTabsProps {}
 
@@ -93,8 +92,8 @@ const TokenItem: FC<TokenItemProps> = observer(function (props) {
           </View>
         </View>
         <Text>
-          {Web3Wallet.bigNumberFormatUnits(
-            Web3Wallet.bigNumberParseUnits(balance.native + "", data.decimals),
+          {web3.ether.bigNumberFormatUnits(
+            web3.ether.bigNumberParseUnits(balance.native + "", data.decimals),
             data.decimals,
           )}{" "}
           {data.shortName}

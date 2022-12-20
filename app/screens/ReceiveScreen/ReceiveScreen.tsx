@@ -14,6 +14,7 @@ import Clipboard from "@react-native-clipboard/clipboard"
 import Share from "react-native-share"
 import QRCode from "react-native-qrcode-svg"
 import Toast from "react-native-simple-toast"
+import { getAddressByChain } from "../../utils/common"
 
 export const ReceiveScreen: FC<ReceiveStackScreenProps<"Receive">> = observer(function ({ route }) {
   // navigators
@@ -24,7 +25,10 @@ export const ReceiveScreen: FC<ReceiveStackScreenProps<"Receive">> = observer(fu
 
   // hooks
   const rootStore = useStores()
-  const address = rootStore.walletStore.activeWallet.address
+  const { address } = getAddressByChain(
+    currency.chain,
+    rootStore.walletStore.activeWallet.addresses,
+  )
   const dimentions = useWindowDimensions()
 
   useHeaderOption({
