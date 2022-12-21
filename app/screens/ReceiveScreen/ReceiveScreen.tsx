@@ -9,12 +9,12 @@ import { useWindowDimensions, View } from "react-native"
 import { useStores } from "../../models"
 import { getRandomId } from "../../utils/string"
 import { images } from "../../../assets"
+import { getAddressByChain } from "../../utils/common"
 
 import Clipboard from "@react-native-clipboard/clipboard"
+import Toast from "react-native-simple-toast"
 import Share from "react-native-share"
 import QRCode from "react-native-qrcode-svg"
-import Toast from "react-native-simple-toast"
-import { getAddressByChain } from "../../utils/common"
 
 export const ReceiveScreen: FC<ReceiveStackScreenProps<"Receive">> = observer(function ({ route }) {
   // navigators
@@ -64,10 +64,8 @@ export const ReceiveScreen: FC<ReceiveStackScreenProps<"Receive">> = observer(fu
             getRef={(c) => (qrCodeRef.current = c)}
             value={address}
             size={dimentions.width * 0.5}
-            logo={images.logo}
-            logoBackgroundColor={colors.white}
-            logoMargin={spacing.small}
-            logoBorderRadius={spacing.small}
+            enableLinearGradient
+            linearGradient={[colors.primary[400], colors.primary[700], colors.primary[500]]}
           />
 
           <Text className="text-center text-sm text-gray-500 mt-3 max-w-[55vw]">{address}</Text>

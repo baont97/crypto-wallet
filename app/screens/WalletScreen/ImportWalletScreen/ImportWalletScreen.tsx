@@ -9,7 +9,7 @@ import { capitalize, getFormErrorMessage, getRandomId, getRandomName } from "../
 import { colors } from "../../../theme"
 import { AppStackScreenProps } from "../../../navigators"
 import { useKeychain } from "../../../hooks"
-import { SUPPORTED_CHAINS } from "../../../config/contants"
+import { SUPPORTED_CHAINS, WALLET_PATHS } from "../../../config/contants"
 import { IMSTArray, _NotCustomized } from "mobx-state-tree"
 
 import Clipboard from "@react-native-clipboard/clipboard"
@@ -35,49 +35,98 @@ export const ImportWalletScreen: FC<AppStackScreenProps<"ImportWallet">> = obser
       walletName: capitalize(getRandomName()),
       mnemonic: "",
     },
-    onSubmit: function (values) {
+    onSubmit: async function (values) {
       _isImporting[1](true)
-      web3.ether
-        .importMnemonic({
-          mnemonic: values.mnemonic,
-          password: "",
-        })
-        .then(async (res) => {
-          const id = getRandomId()
+      const ethWallet = await web3.ether.importMnemonic({
+        mnemonic: values.mnemonic,
+        password: "",
+        path: WALLET_PATHS.ETH,
+      })
 
-          await keychain.save({
-            service: id,
-            password: JSON.stringify(res.keystore),
-            dateTime: new Date().toISOString(),
-          })
+      const btcWallet = await web3.ether.importMnemonic({
+        mnemonic: values.mnemonic,
+        password: "",
+        path: WALLET_PATHS.BTC,
+      })
 
-          rootStore.walletStore.updateWalletList(
-            {
-              id,
-              name: values.walletName,
-              addresses: [
-                {
-                  id: getRandomId() as string,
-                  chain: SUPPORTED_CHAINS.ETH,
-                  address: res.address,
-                },
-                {
-                  id: getRandomId() as string,
-                  chain: SUPPORTED_CHAINS.BTC,
-                  // temporary
-                  address: getRandomId(),
-                },
-              ] as IMSTArray<typeof AddressModel>,
-            },
-            "add",
-          )
+      if (ethWallet && btcWallet) {
+        const id = getRandomId()
+
+        await keychain.save({
+          service: id,
+          password:
+            JSON.stringify(ethWallet.keystore) +
+            "[sparkminds]" +
+            JSON.stringify(btcWallet.keystore),
+          dateTime: new Date().toISOString(),
         })
-        .catch(() => {
-          Alert.alert(getFormErrorMessage("input.secretPhrase.label", "invalid"))
-        })
-        .finally(() => {
-          _isImporting[1](false)
-        })
+
+        rootStore.walletStore.updateWalletList(
+          {
+            id,
+            name: values.walletName,
+            addresses: [
+              {
+                id: getRandomId() as string,
+                address: ethWallet.address,
+                chain: SUPPORTED_CHAINS.ETH,
+              },
+              {
+                id: getRandomId() as string,
+                address: btcWallet.address,
+                chain: SUPPORTED_CHAINS.BTC,
+              },
+            ] as IMSTArray<typeof AddressModel>,
+          },
+          "add",
+        )
+      } else {
+        Alert.alert(getFormErrorMessage("input.secretPhrase.label", "invalid"))
+      }
+      _isImporting[1](false)
+
+      // web3.ether
+      //   .importMnemonic({
+      //     mnemonic: values.mnemonic,
+      //     password: "",
+      //     path: WALLET_PATHS.ETH,
+      //   })
+      //   .then(async (res) => {
+      //     const id = getRandomId()
+
+      //     await keychain.save({
+      //       service: id,
+      //       password: JSON.stringify(res.keystore),
+      //       dateTime: new Date().toISOString(),
+      //     })
+
+      //     rootStore.walletStore.updateWalletList(
+      //       {
+      //         id,
+      //         name: values.walletName,
+      //         addresses: [
+      //           {
+      //             id: getRandomId() as string,
+      //             chain: SUPPORTED_CHAINS.ETH,
+      //             address: res.address,
+      //           },
+      //           {
+      //             id: getRandomId() as string,
+      //             chain: SUPPORTED_CHAINS.BTC,
+      //             // temporary
+      //             address: getRandomId(),
+      //           },
+      //         ] as IMSTArray<typeof AddressModel>,
+      //       },
+      //       "add",
+      //     )
+      //   })
+      //   .catch(() => {
+      //     Alert.alert(getFormErrorMessage("input.secretPhrase.label", "invalid"))
+      //   })
+      //   .finally(() => {
+      //     _isImporting[1](false)
+      //   })
     },
     validationSchema: yup.object().shape({
       walletName: yup

@@ -5,5 +5,5 @@ export const images = {
   welcome,
   emptyState,
 
-  logo: require("./app-icon-all.png"),
+  logo: require("./logo.png"),
 }

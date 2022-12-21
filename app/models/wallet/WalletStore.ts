@@ -45,8 +45,6 @@ export const WalletStoreModel = types
             self.wallets.push(input)
             self.setProp("activeWalletId", input.id)
 
-            console.log("self.wallets.length > 1", self.wallets.length > 1)
-
             if (self.wallets.length > 1) {
               resetRoot({
                 index: 0,

@@ -8,7 +8,7 @@ import { WalletStoreModel } from "./wallet/WalletStore"
  */
 export const RootStoreModel = types.model("RootStore").props({
   walletStore: types.optional(WalletStoreModel, { wallets: [], activeWalletId: "", balances: [] }),
-  currencyStore: types.optional(CurrencyStoreModel, { currencies: Currencies }),
+  currencyStore: types.optional(CurrencyStoreModel, { currencies: [] }),
 })
 
 /**

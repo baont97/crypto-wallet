@@ -12,6 +12,7 @@
 import { applySnapshot, IDisposer, onSnapshot } from "mobx-state-tree"
 import type { RootStore } from "../RootStore"
 import * as storage from "../../utils/storage"
+import { Currencies } from "../../data/currency"
 
 /**
  * The key we'll be saving our state as within async storage.
@@ -28,6 +29,7 @@ export async function setupRootStore(rootStore: RootStore) {
   try {
     // load the last known state from AsyncStorage
     restoredState = (await storage.load(ROOT_STATE_STORAGE_KEY)) || {}
+    restoredState.currencyStore.currencies = Currencies
     applySnapshot(rootStore, restoredState)
   } catch (e) {
     // if there's any problems loading, then inform the dev what happened

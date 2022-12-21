@@ -3,7 +3,7 @@ import { IMSTArray } from "mobx-state-tree"
 import React, { FC, useMemo, useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 import { Button, Icon, Screen, Text } from "../../../components"
-import { SUPPORTED_CHAINS } from "../../../config/contants"
+import { SUPPORTED_CHAINS, WALLET_PATHS } from "../../../config/contants"
 import { useKeychain } from "../../../hooks"
 import { translate } from "../../../i18n"
 import { AddressModel, useStores } from "../../../models"
@@ -42,17 +42,26 @@ export const VerifySecretPhraseScreen: FC<AppStackScreenProps<"VerifySecretPhras
     }
 
     const handleSubmit = async () => {
-      const wallet = await web3.ether.createWallet({
+      const ethWallet = await web3.ether.createWallet({
         mnemonic: mnemonic.join(" "),
         mnemonicPassword: "",
         password: "",
+        path: WALLET_PATHS.ETH,
+      })
+
+      const btcWallet = await web3.ether.createWallet({
+        mnemonic: mnemonic.join(" "),
+        mnemonicPassword: "",
+        password: "",
+        path: WALLET_PATHS.BTC,
       })
 
       const id = getRandomId()
 
       await keychain.save({
         service: id,
-        password: JSON.stringify(wallet.keystore),
+        password:
+          JSON.stringify(ethWallet.keystore) + "[sparkminds]" + JSON.stringify(btcWallet.keystore),
         dateTime: new Date().toISOString(),
       })
 
@@ -69,12 +78,12 @@ export const VerifySecretPhraseScreen: FC<AppStackScreenProps<"VerifySecretPhras
           addresses: [
             {
               id: getRandomId(),
-              address: wallet.address,
+              address: ethWallet.address,
               chain: SUPPORTED_CHAINS.ETH,
             },
             {
               id: getRandomId(),
-              address: "",
+              address: btcWallet.address,
               chain: SUPPORTED_CHAINS.BTC,
             },
           ] as IMSTArray<typeof AddressModel>,

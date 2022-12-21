@@ -9,7 +9,7 @@ import { HeaderBackButton } from "@react-navigation/elements"
 import { translate } from "../../../i18n"
 import { resetRoot } from "../../../navigators"
 
-export const ManageWalletScreen: FC<SettingsStackScreenProps<"Settings">> = observer(function (
+export const ManageWalletScreen: FC<SettingsStackScreenProps<"ManageWallet">> = observer(function (
   props,
 ) {
   const { navigation } = props
@@ -35,7 +35,9 @@ export const ManageWalletScreen: FC<SettingsStackScreenProps<"Settings">> = obse
       })
     }
   }
-  const handleShowDetail = () => {}
+  const handleShowDetail = (wallet: Wallet) => {
+    navigation.navigate("WalletDetails", { wallet })
+  }
 
   // navigators
   useHeaderOption(
@@ -66,7 +68,7 @@ export const ManageWalletScreen: FC<SettingsStackScreenProps<"Settings">> = obse
           onPress: () => updateActiveWallet(item.id),
           iconRightProps: {
             icon: "info",
-            onPress: handleShowDetail,
+            onPress: () => handleShowDetail(item),
           },
         }))}
       />

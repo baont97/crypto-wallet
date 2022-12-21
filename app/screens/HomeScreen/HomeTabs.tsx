@@ -1,13 +1,7 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import React, { FC } from "react"
-import {
-  Image,
-  TouchableOpacity,
-  TouchableOpacityProps,
-  useWindowDimensions,
-  View,
-} from "react-native"
+import { Image, TouchableOpacity, TouchableOpacityProps, View } from "react-native"
 import { Divider, Text } from "../../components"
 import { Currency, useStores } from "../../models"
 import { HomeStackParamList } from "../../navigators/HomeStack"
@@ -22,7 +16,6 @@ export const HomeTabs: FC<HomeTabsProps> = observer(function () {
 
   // animated hooks
   const rootStore = useStores()
-  const dimentions = useWindowDimensions()
   const translationX = useSharedValue(0)
 
   const tabviewStylez = useAnimatedStyle(() => {

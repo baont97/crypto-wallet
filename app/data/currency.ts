@@ -56,4 +56,14 @@ export const Currencies: Currency[] = [
     priceChangePercentage24h: 0,
     chain: SUPPORTED_CHAINS.ETH,
   },
+  {
+    id: "bitcoin",
+    name: "Bitcoin",
+    shortName: "BTC",
+    contractAddress: "",
+    decimals: 18,
+    image: "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
+    priceChangePercentage24h: 0,
+    chain: SUPPORTED_CHAINS.BTC,
+  },
 ]

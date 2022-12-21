@@ -30,7 +30,7 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
       needHash: false,
     })
 
-    const keystore = keychain.data.username
+    const [ethKeyStore, btcKeyStore] = keychain.data.username.split("[sparkminds]")
 
     // navigators
     const { currency, data } = route.params
@@ -98,7 +98,7 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
         createTxnForNonETH({ gasPrice, nonce })
       } else {
         const signedTx = await web3.ether.signTransaction({
-          keystore,
+          keystore: ethKeyStore,
           password: "",
           nonce,
           gasLimit: _gasLimit[0],
@@ -134,7 +134,7 @@ export const SendConfirmationScreen: FC<SendStackScreenProps<"SendConfirmation">
         network: Config.network,
         contractAddress: currency.contractAddress,
         contractAbi: Erc20Abi,
-        keystore,
+        keystore: ethKeyStore,
         password: "",
         nonce,
         gasLimit: _gasLimit[0],
