@@ -12,7 +12,7 @@
 import { applySnapshot, IDisposer, onSnapshot } from "mobx-state-tree"
 import type { RootStore } from "../RootStore"
 import * as storage from "../../utils/storage"
-import { Currencies } from "../../data/currency"
+import { Currencies, DefaultActiveIds } from "../../data/currency"
 
 /**
  * The key we'll be saving our state as within async storage.

@@ -8,6 +8,7 @@ import {
   SendScreen,
   SendConfirmationScreen,
   SendResultScreen,
+  ScanScreen,
 } from "../screens"
 import { Currency } from "../models"
 import { SendModel } from "../screens/SendScreen/SendScreen.types"
@@ -15,11 +16,15 @@ import { ethers } from "ethers"
 
 export type SendStackParamList = {
   Currencies: { type: CurrenciesScreenType }
-  Send: { currency: Currency }
+  Send: { currency: Currency; qrcode: "" }
   SendConfirmation: { currency: Currency; data: SendModel }
   SendResult: {
     tx: ethers.providers.TransactionResponse
     currency: Currency
+  }
+  Scan: {
+    from: string
+    additionParams: any
   }
 }
 
@@ -45,6 +50,7 @@ export const SendStack = observer(function () {
       <Stack.Screen name="Send" component={SendScreen} />
       <Stack.Screen name="SendConfirmation" component={SendConfirmationScreen} />
       <Stack.Screen name="SendResult" component={SendResultScreen} />
+      <Stack.Screen name="Scan" component={ScanScreen} options={{ presentation: "modal" }} />
     </Stack.Navigator>
   )
 })

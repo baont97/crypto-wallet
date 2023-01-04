@@ -20,6 +20,9 @@ import {
   VerifySecretPhraseScreen,
   WelcomeScreen,
   SendScreen,
+  TokenScreen,
+  AddNewTokenScreen,
+  ScanScreen,
 } from "../screens"
 import { LegalScreen } from "../screens/LegalScreen/LegalScreen"
 import { navigationTheme } from "../theme/theme"
@@ -58,6 +61,16 @@ export type AppStackParamList = {
   ReceiveStack: undefined
   Buy: undefined
   Swap: undefined
+  Scan: {
+    /**
+     * The screen that we need to navigate after scan qr code successfully
+     */
+    from: string
+    /**
+     * The params of the 'from' screen
+     */
+    additionParams: any
+  }
 
   /**
    * Import existed wallet
@@ -69,6 +82,12 @@ export type AppStackParamList = {
    */
   GenerateSecretPhrase: { password: string }
   VerifySecretPhrase: { mnemonic: Menemonic; mnemonicHeight: number }
+
+  /**
+   * Token
+   */
+  Token: undefined
+  AddNewToken: { qrcode: string }
 }
 
 /**
@@ -120,6 +139,13 @@ const AppStack = observer(function AppStack() {
             component={ReceiveStack}
             options={{ presentation: "modal", headerShown: false }}
           />
+          <Stack.Screen name="Token" component={TokenScreen} options={{ presentation: "modal" }} />
+          <Stack.Screen
+            name="AddNewToken"
+            component={AddNewTokenScreen}
+            options={{ presentation: "modal" }}
+          />
+          <Stack.Screen name="Scan" component={ScanScreen} options={{ presentation: "modal" }} />
         </Stack.Group>
       ) : (
         <Stack.Group>

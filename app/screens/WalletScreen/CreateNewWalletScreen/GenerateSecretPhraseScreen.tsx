@@ -5,12 +5,11 @@ import { translate } from "../../../i18n"
 import { AppStackScreenProps } from "../../../navigators"
 import { colors } from "../../../theme"
 import { useIsMounted } from "../../../utils/useIsMounted"
-
-import Config from "../../../config"
-import Clipboard from "@react-native-clipboard/clipboard"
-import Toast from "react-native-simple-toast"
 import { web3 } from "../../../utils/web3"
 import { Menemonic } from "../../../utils/web3/ether/ether.types"
+
+import Clipboard from "@react-native-clipboard/clipboard"
+import Toast from "react-native-simple-toast"
 
 export const GenerateSecretPhraseSreen: FC<AppStackScreenProps<"GenerateSecretPhrase">> = ({
   navigation,

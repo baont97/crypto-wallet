@@ -42,6 +42,8 @@ const vi: Translations = {
       sendConfirmation: "Xác nhận",
       buy: "Mua",
       manageWallet: "Quản lý ví",
+      token: "Tokens",
+      addCustomToken: "Thêm Token",
     },
   },
   legal: {
@@ -108,6 +110,12 @@ const vi: Translations = {
   settings: {
     wallets: "Quản lý ví",
   },
+  addNewToken: {
+    hint: "Mọi người đều có thể tạo 1 token, kể cả phiên bản giả mạo của những token đang hiện hữu",
+  },
+  scanScreen: {
+    qrcode: "Quét QR Code",
+  },
   input: {
     walletName: {
       label: "Tên ví",
@@ -127,6 +135,22 @@ const vi: Translations = {
     amount: {
       label: "Số lượng",
       placeholder: "0.00",
+    },
+    contractAddress: {
+      label: "Địa chỉ",
+      placeholder: "Địa chỉ",
+    },
+    name: {
+      label: "Tên",
+      placeholder: "Tên",
+    },
+    symbol: {
+      label: "Mã",
+      placeholder: "Mã",
+    },
+    decimals: {
+      label: "Số thập phân",
+      placeholder: "Số thập phân",
     },
   },
   errorMessage: {

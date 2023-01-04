@@ -1,6 +1,6 @@
+import React, { FC, useMemo, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { IMSTArray } from "mobx-state-tree"
-import React, { FC, useMemo, useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 import { Button, Icon, Screen, Text } from "../../../components"
 import { SUPPORTED_CHAINS, WALLET_PATHS } from "../../../config/contants"

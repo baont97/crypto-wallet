@@ -1,12 +1,13 @@
+import React, { FC } from "react"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
-import React, { FC } from "react"
 import { Image, TouchableOpacity, TouchableOpacityProps, View } from "react-native"
 import { Divider, Text } from "../../components"
 import { Currency, useStores } from "../../models"
 import { HomeStackParamList } from "../../navigators/HomeStack"
-import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { web3 } from "../../utils/web3"
+import { CurrencyDefaultAvatar } from "../TokenScreen"
+import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 
 interface HomeTabsProps {}
 
@@ -36,7 +37,7 @@ export const HomeTabs: FC<HomeTabsProps> = observer(function () {
     <View>
       <Animated.View className="flex-row" style={tabviewStylez}>
         <View className="w-[100vw]">
-          {rootStore.currencyStore.currencies.map((item, index, { length }) => (
+          {rootStore.currencyStore.activeCurrencies.map((item, index, { length }) => (
             <TokenItem
               data={item}
               key={index}
@@ -64,7 +65,11 @@ const TokenItem: FC<TokenItemProps> = observer(function (props) {
   return (
     <TouchableOpacity {...rest}>
       <View className="flex-row items-center px-3 py-4">
-        <Image source={{ uri: data.image }} className="w-[45px] aspect-square rounded-full" />
+        {!data.image ? (
+          <CurrencyDefaultAvatar shortName={data.shortName} />
+        ) : (
+          <Image source={{ uri: data.image }} className="w-[45px] aspect-square rounded-full" />
+        )}
         <View className="flex-auto px-3">
           <View className="flex-1 justify-center">
             <Text>{data.name}</Text>

@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useRef, useState } from "react"
+import React, { FC, useEffect, useMemo, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
   RefreshControl,
@@ -15,7 +15,7 @@ import { useHeaderOption } from "../../utils/useHeader"
 import { HomeActions } from "./HomeActions"
 import { HomeTabs } from "./HomeTabs"
 import { HomeStackScreenProps } from "../../navigators/HomeStack"
-import { getDefaultHeaderHeight, useHeaderHeight } from "@react-navigation/elements"
+import { getDefaultHeaderHeight } from "@react-navigation/elements"
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { HomeTabs as HomeTabList, HomeTab } from "./HomeScreen.types"
 import { ElementPosition } from "./HomeScreen.types"
@@ -45,9 +45,11 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ({
   const _balancePosition = useState<ElementPosition>()
 
   // navigators
-  const headerHeight = useHeaderHeight()
   const bottomTabBarHeight = useBottomTabBarHeight()
   const dimentions = useWindowDimensions()
+  const headerHeight =
+    getDefaultHeaderHeight(dimentions, false, StatusBar.currentHeight) +
+    (Config.isIOS ? insets.top : 0)
 
   // animated
   const translationY = useSharedValue(0)
@@ -56,7 +58,6 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ({
   // refs
   const tabViewRef = useRef<View>()
   const scrollViewRef = useRef<ScrollView & Animated.ScrollView>()
-  const previousScrollOffsetY = useRef<number>(0)
 
   const scrollHandler = useAnimatedScrollHandler(
     {
@@ -91,15 +92,12 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ({
 
   const $tabViewStylez = useAnimatedStyle(
     () => ({
-      top: Math.round(_tabPosition[0]?.y) - Math.round(headerHeight) || 0,
+      top: Math.round(_tabPosition[0]?.y) || 0,
       width: _tabPosition[0]?.width || 0,
       height: _tabPosition[0]?.height || 0,
       transform: [
         {
-          translateY: Math.max(
-            -translationY.value,
-            -(_tabPosition[0]?.y - Math.round(headerHeight)) || 0,
-          ),
+          translateY: Math.max(-translationY.value, -_tabPosition[0]?.y || 0),
         },
       ],
     }),
@@ -123,20 +121,8 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ({
       headerTintColor: colors.white,
       header: (props) => {
         return (
-          <View
-            style={{
-              height:
-                getDefaultHeaderHeight(dimentions, false, StatusBar.currentHeight) +
-                (Config.isIOS ? insets.top : 0),
-            }}
-            className="bg-primary-500 flex-row items-end"
-          >
-            <View className="basis-1/5 items-start">
-              <Button
-                preset="clear"
-                LeftAccessory={() => <Icon icon="bell" color={props?.options.headerTintColor} />}
-              />
-            </View>
+          <View style={{ height: headerHeight }} className="bg-primary-500 flex-row items-end">
+            <View className="basis-1/5 items-start" />
             <Animated.View
               className="items-center justify-center basis-3/5 h-full"
               style={[{ paddingTop: insets.top }, $headerTextStylez]}
@@ -145,7 +131,13 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ({
                 ${i18n.toCurrency(rootStore.walletStore.totalBalanceInFiat, { unit: "" })}
               </Text>
             </Animated.View>
-            <View className="basis-1/5" />
+            <View className="basis-1/5 items-end">
+              <Button
+                preset="clear"
+                onPress={() => navigation.getParent().navigate("Token")}
+                LeftAccessory={() => <Icon icon="filter" color={props?.options.headerTintColor} />}
+              />
+            </View>
           </View>
         )
       },
@@ -182,6 +174,20 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ({
     </>
   )
 
+  useEffect(() => {
+    if (!tabViewRef.current || !scrollViewRef.current) return
+
+    tabViewRef.current.measureLayout(
+      scrollViewRef.current as any,
+      (x, y, width, height) => {
+        _tabPosition[1]({ x, y, width, height })
+      },
+      () => {
+        console.log("fail")
+      },
+    )
+  }, [tabViewRef.current, scrollViewRef.current])
+
   return (
     <Screen preset="fixed" statusBarStyle="light">
       <Animated.View style={$viewStylez} className="flex-auto">
@@ -208,16 +214,6 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ({
           refreshControl={
             <RefreshControl tintColor={colors.white} refreshing={false} onRefresh={() => {}} />
           }
-          onScrollEndDrag={(e) => {
-            if (scrollViewRef.current) {
-              const isScrollDown = e.nativeEvent.contentOffset.y > _balancePosition[0].height
-              const nextScrollOffsetY = isScrollDown ? _tabPosition[0].y : 0
-              scrollViewRef.current.scrollTo({
-                y: nextScrollOffsetY,
-              })
-              previousScrollOffsetY.current = nextScrollOffsetY
-            }
-          }}
         >
           <View className="items-center justify-center bg-primary-500">
             <Text
@@ -234,16 +230,7 @@ export const HomeScreen: FC<HomeStackScreenProps<"Home">> = observer(function ({
           </View>
 
           <View className="bg-white rounded-t-md w-[100vw]" style={{ minHeight: minHeight }}>
-            <View
-              ref={tabViewRef}
-              onLayout={() => {
-                tabViewRef.current.measureInWindow((x, y, width, height) => {
-                  _tabPosition[1]({ x, y, width, height })
-                })
-              }}
-            >
-              {renderTabs()}
-            </View>
+            <View ref={tabViewRef}>{renderTabs()}</View>
 
             <HomeTabs />
           </View>

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo } from "react"
+import React, { FC, useMemo } from "react"
 import { observer } from "mobx-react-lite"
 import { Button, Icon, Screen, Text, TextField } from "../../components"
 import { SendStackScreenProps } from "../../navigators/SendStack"
@@ -31,7 +31,7 @@ export const SendScreen: FC<SendStackScreenProps<"Send">> = observer(function ({
   // form
   const formik = useFormik<SendModel>({
     initialValues: {
-      address: "",
+      address: route.params.qrcode,
       amount: null,
       tag: "",
     },
@@ -61,6 +61,7 @@ export const SendScreen: FC<SendStackScreenProps<"Send">> = observer(function ({
         .max(currencyWallet.native, getFormErrorMessage("input.amount.label", "invalid"))
         .nullable(),
     }),
+    enableReinitialize: true,
   })
 
   const { values, handleChange, setFieldValue, validateForm, handleSubmit } = formik
@@ -107,6 +108,13 @@ export const SendScreen: FC<SendStackScreenProps<"Send">> = observer(function ({
     }
   }
 
+  const handleScan = () => {
+    navigation.getParent().navigate("Scan", {
+      from: "Send",
+      additionParams: route.params,
+    })
+  }
+
   return (
     <Screen preset="fixed" contentContainerStyle="flex-auto" backgroundColor={colors.background}>
       <View className="p-6">
@@ -119,7 +127,7 @@ export const SendScreen: FC<SendStackScreenProps<"Send">> = observer(function ({
               <TouchableOpacity className="px-2 justify-center" onPress={handlePaste}>
                 <Text tx="common.paste" className="text-primary-500 uppercase text-sm" />
               </TouchableOpacity>
-              <TouchableOpacity className="px-2 justify-center min-w-[45]">
+              <TouchableOpacity className="px-2 justify-center min-w-[45]" onPress={handleScan}>
                 <Icon icon="qrScan" size={spacing.medium} color={colors.primary[500]} />
               </TouchableOpacity>
             </View>

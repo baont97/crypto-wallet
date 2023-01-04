@@ -4,6 +4,7 @@ import {
   FlatList,
   Image,
   ImageStyle,
+  ListRenderItem,
   TouchableOpacity,
   TouchableOpacityProps,
   View,
@@ -20,12 +21,14 @@ import { web3 } from "../../utils/web3"
 export interface CurrenciesProps {
   onItemPress: (currency: Currency) => void
   filterFunct: (x: Currency, y: number, z: []) => boolean
+  renderItem?: ListRenderItem<Currency>
   ref: React.Ref<typeof Currencies>
+  data?: Currency[]
 }
 
 export const Currencies: FC<CurrenciesProps> = observer(
   React.forwardRef(function (
-    { onItemPress, filterFunct }: CurrenciesProps,
+    { onItemPress, filterFunct = () => true, renderItem, data }: CurrenciesProps,
     ref: React.Ref<typeof Currencies>,
   ) {
     const rootStore = useStores()
@@ -48,12 +51,17 @@ export const Currencies: FC<CurrenciesProps> = observer(
     return (
       <FlatList
         data={
-          rootStore.currencyStore.filterCurrencies(_keyword[0]).filter(filterFunct) as Currency[]
+          rootStore.currencyStore
+            .filterCurrencies(data || rootStore.currencyStore.activeCurrencies, _keyword[0])
+            .filter(filterFunct) as Currency[]
         }
         keyExtractor={(_, index) => index + ""}
-        renderItem={({ item }) => {
-          return <CurrencyItem data={item} onPress={() => onItemPress(item)} />
-        }}
+        renderItem={
+          renderItem ||
+          (({ item }) => {
+            return <CurrencyItem data={item} onPress={() => onItemPress(item)} />
+          })
+        }
         ItemSeparatorComponent={() => <Divider className="ml-[70px] h-[0.5px]" />}
         contentInsetAdjustmentBehavior="automatic"
         ListEmptyComponent={

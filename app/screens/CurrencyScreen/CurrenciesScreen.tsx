@@ -8,6 +8,8 @@ import { HeaderBackButton } from "@react-navigation/elements"
 import { Currency, useStores } from "../../models"
 import { getNavigationHeaderText } from "../../navigators"
 import { translate } from "../../i18n"
+import { useHeaderSearchbar } from "../../hooks"
+import Config from "../../config"
 
 interface CurrenciesScreenProps extends ReceiveStackScreenProps<"Currencies"> {}
 
@@ -20,6 +22,7 @@ export const CurrenciesScreen: FC<CurrenciesScreenProps> = observer(function ({
 
   // refs
   const currenciesRef = useRef<typeof Currencies>()
+  const headerSearchBarOptions = useHeaderSearchbar(currenciesRef)
 
   // navigators
   const type = route.params.type
@@ -30,6 +33,7 @@ export const CurrenciesScreen: FC<CurrenciesScreenProps> = observer(function ({
       headerTintColor: colors.white,
       headerStyle: { backgroundColor: colors.primary[500] },
       headerRight: (props) => {
+        if (!Config.isIOS) return null
         return (
           <HeaderBackButton
             {...props}
@@ -38,18 +42,7 @@ export const CurrenciesScreen: FC<CurrenciesScreenProps> = observer(function ({
           />
         )
       },
-      headerSearchBarOptions: {
-        // search bar options
-        onChangeText: (event) =>
-          currenciesRef?.current?.["search"] &&
-          currenciesRef?.current?.["search"](event.nativeEvent.text),
-        placeholder: translate("input.search.placeholder"),
-        hintTextColor: colors.white,
-        headerIconColor: colors.white,
-        barTintColor: colors.white,
-        hideWhenScrolling: false,
-        tintColor: colors.white,
-      },
+      headerSearchBarOptions,
     },
     [navigation],
   )

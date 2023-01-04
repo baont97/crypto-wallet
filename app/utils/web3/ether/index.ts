@@ -6,6 +6,7 @@ import "@ethersproject/shims"
 
 // Import the ethers library
 import { BigNumber, ethers } from "ethers"
+
 import {
   ContractTransactionProps,
   CreateWalletProps,
@@ -83,7 +84,7 @@ export function getBalance(props: GetBalanceProps) {
   const { network, address, networkDetail = { name: "", chainId: "", ensAddress: "" } } = props
   return new Promise((fulfill, reject) => {
     try {
-      let provider
+      let provider: ethers.providers.JsonRpcProvider | ethers.providers.BaseProvider
       if (network === "" || network === undefined) {
         provider = ethers.providers.getDefaultProvider()
       } else {
@@ -121,7 +122,7 @@ export function getContractBalance(props: GetContractBalanceProps) {
   } = props
   return new Promise((fulfill, reject) => {
     try {
-      let provider
+      let provider: ethers.providers.JsonRpcProvider | ethers.providers.BaseProvider
       if (network === "" || network === undefined) {
         provider = ethers.providers.getDefaultProvider()
       } else {

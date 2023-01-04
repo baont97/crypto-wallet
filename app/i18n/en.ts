@@ -40,6 +40,8 @@ const en = {
       sendConfirmation: "Confirm",
       buy: "Buy",
       manageWallet: "Wallets",
+      token: "Tokens",
+      addCustomToken: "Add Custom Token",
     },
   },
   legal: {
@@ -106,6 +108,12 @@ const en = {
   settings: {
     wallets: "Wallets",
   },
+  addNewToken: {
+    hint: "Anyone can create a token, including fake versions of existing tokens.",
+  },
+  scanScreen: {
+    qrcode: "Scan QR code",
+  },
   input: {
     walletName: {
       label: "Name",
@@ -125,6 +133,22 @@ const en = {
     amount: {
       label: "Amount",
       placeholder: "0.00",
+    },
+    contractAddress: {
+      label: "Contract Address",
+      placeholder: "Contract Address",
+    },
+    name: {
+      label: "Name",
+      placeholder: "Name",
+    },
+    symbol: {
+      label: "Symbol",
+      placeholder: "Symbol",
+    },
+    decimals: {
+      label: "Decimals",
+      placeholder: "Decimals",
     },
   },
   errorMessage: {

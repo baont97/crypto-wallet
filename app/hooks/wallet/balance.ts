@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { Balance, Currency, useStores } from "../../models"
 import { Erc20Abi } from "../../abis"
 import { MarketPrice } from "./balance.types"
@@ -7,6 +7,7 @@ import { getAddressByChain } from "../../utils/common"
 
 import BigNumber from "bignumber.js"
 import Config from "../../config"
+import { useFocusEffect } from "@react-navigation/native"
 
 interface CustomBalance extends Balance {
   priceChangePercentage24h: number
@@ -15,7 +16,7 @@ interface CustomBalance extends Balance {
 export const useBalance = () => {
   const rootStore = useStores()
   const activeWallet = rootStore.walletStore.activeWallet
-  const currencies = rootStore.currencyStore.currencies
+  const currencies = rootStore.currencyStore.activeCurrencies
   const unit = "usd"
 
   /**
@@ -62,8 +63,10 @@ export const useBalance = () => {
       }
     } else {
       const balance = Number(web3.ether.bigNumberFormatUnits(response, currency.decimals))
-      const { current_price: exchangeRate, price_change_percentage_24h: priceChangePercentage24h } =
-        (await fetchMartket(currency.id)) || { current_price: 0, price_change_24h: 0 }
+      const market = await fetchMartket(currency.id)
+
+      const exchangeRate = market?.current_price || 0
+      const priceChangePercentage24h = market?.price_change_percentage_24h || 0
 
       return {
         currencyId: currency.id,
@@ -76,9 +79,12 @@ export const useBalance = () => {
   }
 
   const boostrapAsync = async () => {
+    if (!activeWallet?.id) return
+
     const promises = currencies.map((x) => fetchBalance(x))
     Promise.all(promises).then((response) => {
       rootStore.walletStore.setProp("balances", response)
+
       rootStore.currencyStore.setProp(
         "currencies",
         rootStore.currencyStore.currencies.map((item) => ({
@@ -87,12 +93,21 @@ export const useBalance = () => {
             response.find((_item) => _item.currencyId === item.id)?.priceChangePercentage24h || 0,
         })),
       )
+
+      rootStore.currencyStore.setProp(
+        "customCurrencies",
+        rootStore.currencyStore.customCurrencies.map((item) => ({
+          ...item,
+          priceChangePercentage24h:
+            response.find((_item) => _item.currencyId === item.id)?.priceChangePercentage24h || 0,
+        })),
+      )
     })
   }
 
-  useEffect(() => {
-    if (activeWallet?.id) {
+  useFocusEffect(
+    useCallback(() => {
       boostrapAsync()
-    }
-  }, [activeWallet?.id])
+    }, []),
+  )
 }

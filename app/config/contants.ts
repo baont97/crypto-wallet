@@ -1,3 +1,5 @@
+import { Platform } from "react-native"
+
 export const SUPPORTED_CHAINS = {
   ETH: "ETH",
   BTC: "BTC",
